@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico de tu Oficina · Coach Ricardo Gabisson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a1a;--muted:#6b6b6b;--faint:#aaa;
+  --bg:#f8f6f2;--white:#fff;--border:#e2ddd7;
+  --p1:#1a3a5c;--p1l:#e8f0f8;
+  --p2:#0d5c3a;--p2l:#e5f4ec;
+  --p3:#7a3d00;--p3l:#fef2e4;
+  --p4:#8b1a1a;--p4l:#fdeaea;
+  --pm:#4a1a6b;--pml:#f0eaf8;
+  --accent:#c8a96e;--ok:#2e7d32;
+  --r:10px
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+
+/* ── COVER ── */
+#cover{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;background:var(--white)}
+.cover-title{font-family:'DM Serif Display',serif;font-size:2.1rem;font-weight:400;line-height:1.2;margin-bottom:.375rem}
+.cover-coach{font-size:.975rem;color:var(--muted);margin-bottom:.25rem}
+.cover-divider{width:40px;height:2px;background:var(--border);margin:1.25rem auto}
+.cover-intro{font-size:.975rem;color:var(--muted);line-height:1.8;max-width:500px;margin:0 auto 1.5rem;text-align:left;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
+.cover-intro p{margin-bottom:.75rem}
+.cover-intro p:last-child{margin-bottom:0}
+.cover-intro strong{color:var(--ink)}
+.cover-card{background:var(--bg);border-radius:14px;border:1px solid var(--border);padding:1.75rem;max-width:440px;width:100%;text-align:left}
+.cover-card h3{font-size:1.05rem;font-weight:600;margin-bottom:.625rem}
+.cover-bullets{list-style:none;display:flex;flex-direction:column;gap:.375rem;margin-bottom:1.25rem}
+.cover-bullets li{font-size:.9rem;color:var(--muted);display:flex;align-items:center;gap:7px}
+.cover-bullets li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.fg{margin-bottom:.75rem}
+.fl{display:block;font-size:.9rem;font-weight:600;margin-bottom:4px;color:var(--ink)}
+input[type=text],input[type=password]{width:100%;border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-family:'DM Sans',sans-serif;font-size:.975rem;background:var(--white);color:var(--ink);transition:border-color .15s}
+input[type=text]:focus{outline:none;border-color:#999}
+.start-btn{width:100%;padding:12px;background:var(--ink);color:white;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:1.05rem;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:.25rem}
+.start-btn:hover{background:#2e2e2e}
+.cover-footer{margin-top:2rem;font-size:.75rem;color:var(--faint);font-style:italic}
+
+/* ── FORM ── */
+#form-wrap{display:none}
+.sticky-hdr{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;padding:0 1.25rem}
+.sticky-in{max-width:700px;margin:0 auto;height:52px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.hdr-brand{display:flex;align-items:center;gap:8px}
+.hdr-dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.hdr-title{font-family:'DM Serif Display',serif;font-size:1.05rem}
+.hdr-name{font-size:.75rem;color:var(--muted)}
+.hdr-right{font-size:.825rem;color:var(--muted);white-space:nowrap}
+.prog-wrap{background:var(--border);height:3px}
+.prog-bar{height:100%;background:var(--ink);transition:width .4s}
+.save-strip{background:var(--bg);border-bottom:1px solid var(--border);padding:4px 1.25rem}
+.save-strip-in{max-width:700px;margin:0 auto;display:flex;align-items:center;gap:5px;font-size:.75rem;color:var(--faint)}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--faint);flex-shrink:0;transition:background .3s}
+.sdot.ok{background:var(--ok)}.sdot.spin{background:var(--accent);animation:pulse .5s infinite alternate}
+@keyframes pulse{to{opacity:.3}}
+.fmain{max-width:700px;margin:0 auto;padding:1.5rem 1.25rem 6rem}
+
+/* ── SECTION HEADERS ── */
+.sec-hdr{display:flex;align-items:center;gap:10px;padding:.875rem 1rem;border-radius:10px;margin-bottom:1rem;border:1px solid}
+.sec-hdr h2{font-family:'DM Serif Display',serif;font-size:1.275rem;font-weight:400}
+.sec-hdr p{font-size:.825rem;margin-top:1px;opacity:.75}
+.sec-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.sh-ctx{background:#f5f0e8;border-color:#e0d0b0}
+.sh-p1{background:var(--p1l);border-color:#b8cfe0}
+.sh-p2{background:var(--p2l);border-color:#a8d4bc}
+.sh-p3{background:var(--p3l);border-color:#e0c090}
+.sh-p4{background:var(--p4l);border-color:#e0b0b0}
+.sh-pm{background:var(--pml);border-color:#c8a8e0}
+.sh-vis{background:#f0eef8;border-color:#c0b8e0}
+
+/* ── QUESTIONS ── */
+.qblock{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:1.125rem;margin-bottom:.75rem}
+.qnum{display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--ink);color:white;font-size:.75rem;font-weight:700;align-items:center;justify-content:center;margin-right:5px;flex-shrink:0;vertical-align:middle}
+.qlabel{font-size:.975rem;font-weight:500;line-height:1.5;margin-bottom:.5rem;display:block}
+.qhint{font-size:.825rem;color:var(--muted);margin-bottom:.5rem;font-style:italic;line-height:1.5}
+textarea{width:100%;border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:'DM Sans',sans-serif;font-size:.975rem;background:var(--bg);color:var(--ink);resize:vertical;transition:border-color .15s;min-height:72px}
+textarea:focus{outline:none;border-color:#999;background:var(--white)}
+select{width:100%;border:1px solid var(--border);border-radius:7px;padding:9px 11px;font-family:'DM Sans',sans-serif;font-size:.975rem;background:var(--bg);color:var(--ink)}
+select:focus{outline:none;border-color:#999}
+
+/* ── RADIO ── */
+.rg{display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.ro{display:flex;align-items:flex-start;gap:8px;padding:9px 11px;border-radius:7px;border:1px solid var(--border);cursor:pointer;background:var(--bg);transition:all .12s}
+.ro:hover{border-color:#aaa;background:var(--white)}.ro.sel{border-color:var(--ink);background:var(--white)}
+.ro input{margin-top:2px;accent-color:var(--ink);flex-shrink:0}.ro label{font-size:.975rem;cursor:pointer;line-height:1.4}
+
+/* ── SCALE ── */
+.scg{display:flex;gap:3px;flex-wrap:wrap;margin-top:5px}
+.scb{width:38px;height:38px;border-radius:7px;border:1px solid var(--border);background:var(--bg);cursor:pointer;font-size:.9rem;font-weight:500;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .12s}
+.scb:hover{border-color:#999;color:var(--ink)}.scb.sel{background:var(--ink);color:white;border-color:var(--ink)}
+.sc-lbs{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-top:3px}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.625rem}
+
+/* ── CHK OPT ── */
+.chk-opt{display:flex;align-items:flex-start;gap:8px;padding:9px 11px;border-radius:7px;border:1px solid var(--border);cursor:pointer;background:var(--bg);transition:all .12s}
+.chk-opt:hover{border-color:#aaa;background:var(--white)}
+.chk-opt input{margin-top:2px;accent-color:var(--ink);flex-shrink:0}
+.chk-opt span{font-size:.8125rem;line-height:1.4}
+
+/* ── NAV ── */
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;flex-wrap:wrap;gap:.625rem}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:8px;border:1px solid;font-family:'DM Sans',sans-serif;font-size:.975rem;font-weight:500;cursor:pointer;transition:all .15s}
+.btn-p{background:var(--ink);color:white;border-color:var(--ink)}.btn-p:hover{background:#2e2e2e}
+.btn-s{background:white;color:var(--ink);border-color:var(--border)}.btn-s:hover{border-color:#999}
+.btn-ok{background:var(--ok);color:white;border-color:var(--ok)}.btn-ok:hover{background:#1b5e20}
+
+/* ── SECTIONS ── */
+.sec{display:none}.sec.on{display:block}
+
+/* ── DONE ── */
+#done-screen{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;background:var(--white)}
+.done-box{background:var(--bg);border-radius:16px;border:1px solid var(--border);padding:2rem;max-width:500px;width:100%}
+.done-icon{font-size:3.9rem;margin-bottom:.75rem}
+.done-box h2{font-family:'DM Serif Display',serif;font-size:1.65rem;font-weight:400;margin-bottom:.5rem}
+.done-box p{font-size:.975rem;color:var(--muted);line-height:1.6;margin-bottom:1.25rem}
+.wa-btn{width:100%;padding:13px;background:#25D366;color:white;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1.125rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:.625rem;transition:background .15s}
+.wa-btn:hover{background:#1da851}
+.copy-btn{width:100%;padding:11px;background:white;color:var(--ink);border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.975rem;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:.5rem;transition:border-color .15s}
+.copy-btn:hover{border-color:#999}
+.scores-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:1rem 0;text-align:left}
+.score-pill{display:flex;align-items:center;gap:7px;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:.5rem .75rem}
+.score-num{font-family:'DM Serif Display',serif;font-size:1.65rem;flex-shrink:0}
+.score-lbl{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;line-height:1.3}
+.edit-link{font-size:.825rem;color:var(--muted);cursor:pointer;text-decoration:underline;margin-top:.75rem;display:inline-block}
+
+/* ── RESUME BANNER ── */
+.resume-banner{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--p2l);border-top:2px solid #a8d4bc;padding:.875rem 1.25rem;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap}
+.resume-banner p{font-size:.975rem;color:var(--p2)}
+
+/* ── NOTA INFO ── */
+.nota-info{background:#fffdf5;border:1px solid #e8d9b0;border-radius:9px;padding:.875rem 1rem;margin-bottom:.75rem;font-size:.825rem;color:var(--muted);line-height:1.6}
+
+@media(max-width:520px){
+  .g2,.g3{grid-template-columns:1fr}
+  .scg{gap:2px}.scb{width:33px;height:33px;font-size:.825rem}
+  .cover-title{font-size:1.65rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ COVER ══════════════════════════════════════════════ -->
+<div id="cover">
+  <div style="font-size:1.6rem;font-weight:400;color:var(--ink);margin-bottom:6px;font-family:'DM Serif Display',serif;line-height:1.2">Preguntas para broker inmobiliario</div>
+  <div style="font-size:.875rem;color:var(--muted);font-weight:400;margin-top:2px">Coach Ricardo Gabisson</div>
+  <div class="cover-divider"></div>
+
+  <div class="cover-card">
+    <p style="font-size:.9rem;color:var(--muted);line-height:1.7;margin-bottom:1rem">Ricardo preparó esta serie de preguntas para entender en profundidad cómo está funcionando tu oficina hoy.<br><br>No es un examen — no hay respuestas correctas ni incorrectas.<br><br>La intención es juntar información para poder hacer un diagnóstico y diseñar luego un plan de trabajo a medida para tu oficina.</p>
+    <h3>Antes de empezar</h3>
+    <ul class="cover-bullets">
+      <li>Tus respuestas se guardan automáticamente mientras escribís</li>
+      <li>Si cerrás y volvés desde el mismo dispositivo, retomás donde estabas</li>
+      <li>Al finalizar, enviás todo a Ricardo por WhatsApp con un solo botón</li>
+    </ul>
+    <div class="fg"><label class="fl">Tu nombre completo</label><input type="text" id="c_nombre" placeholder="Ej: Martín García"></div>
+    <div class="fg"><label class="fl">Nombre de tu oficina / nombre de la red inmobiliaria</label><input type="text" id="c_oficina" placeholder="Ej: Oficina Platino de la red inmobiliaria XXX"></div>
+    <div class="fg"><label class="fl">Clave de acceso</label><input type="password" id="c_clave" placeholder="Ingresá la clave que te dio tu coach"></div>
+    <div id="clave-error" style="display:none;color:#c00;font-size:.8rem;margin-bottom:.5rem">Clave incorrecta. Verificá con tu coach.</div>
+    <button class="start-btn" onclick="startForm()">Comenzar el diagnóstico →</button>
+  </div>
+  <div class="cover-footer">Ricardo Gabisson - Coach Ejecutivo e Inmobiliario</div>
+</div>
+
+<!-- ══ FORM ════════════════════════════════════════════════ -->
+<div id="form-wrap">
+  <header class="sticky-hdr">
+    <div class="sticky-in">
+      <div class="hdr-brand">
+        <div class="hdr-dot"></div>
+        <div>
+          <div class="hdr-title">Diagnóstico de tu Oficina</div>
+          <div class="hdr-name" id="hdr-name">—</div>
+        </div>
+      </div>
+      <div class="hdr-right" id="hdr-step">Bloque 1 de 7</div>
+    </div>
+  </header>
+  <div class="prog-wrap"><div class="prog-bar" id="pbar" style="width:0%"></div></div>
+  <div class="save-strip">
+    <div class="save-strip-in"><div class="sdot" id="sdot"></div><span id="stxt">Tus respuestas se guardan automáticamente</span></div>
+  </div>
+
+  <div class="fmain">
+
+    <!-- ══════════════════════════════════════════════════════
+         BLOQUE 0: AUTOEVALUACIÓN INICIAL 4P
+    ══════════════════════════════════════════════════════ -->
+    <div id="b0" class="sec on">
+      <div class="sec-hdr" style="background:#f5f0e8;border-color:#e0d0b0">
+        <div class="sec-icon" style="background:#e8e0d0">🔍</div>
+        <div><h2>Antes de arrancar — una foto rápida</h2><p>Autoevaluación inicial de las 4 dimensiones de tu oficina</p></div>
+      </div>
+
+      <div class="nota-info">
+        Este primer bloque de autoevaluación de apertura nos da una foto general de cómo ves tu oficina hoy. En los bloques siguientes hay preguntas de mayor profundidad.
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel">¿Cómo gestionás la oficina?</span>
+        <div style="font-size:.75rem;color:var(--p1);margin-bottom:.5rem;line-height:1.5;background:var(--p1l);border-radius:6px;padding:.5rem .75rem">
+          <strong>1</strong> = Tu equipo funciona con autonomía. Vos fijás el rumbo, ellos ejecutan. Podés irte un mes y la oficina sigue.<br>
+          <strong>10</strong> = Todo pasa por vos: operás, resolvés, decidís todo. Si no estás, nada avanza.
+        </div>
+        <div class="scg" id="sg_lp1"></div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel">¿Qué tan desarrollado está tu equipo?</span>
+        <div style="font-size:.75rem;color:var(--p2);margin-bottom:.5rem;line-height:1.5;background:var(--p2l);border-radius:6px;padding:.5rem .75rem">
+          <strong>1</strong> = Cada uno trabaja a su manera, sin cultura ni estándares compartidos. Alta rotación, poco compromiso.<br>
+          <strong>10</strong> = Hay una forma de hacer las cosas, los asesores se forman, se sienten parte, y los resultados son consistentes.
+        </div>
+        <div class="scg" id="sg_lp2"></div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel">¿Qué tan organizado está el sistema de trabajo?</span>
+        <div style="font-size:.75rem;color:var(--p3);margin-bottom:.5rem;line-height:1.5;background:var(--p3l);border-radius:6px;padding:.5rem .75rem">
+          <strong>1</strong> = No hay proceso definido. Cada asesor capta, sigue y cierra como puede. Dependés de que les salga bien o mal el día.<br>
+          <strong>10</strong> = Hay un método claro de captación, seguimiento y cierre que todos conocen y aplican. El proceso no depende del humor de nadie.
+        </div>
+        <div class="scg" id="sg_lp3"></div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel">¿Qué estás midiendo?</span>
+        <div style="font-size:.75rem;color:var(--p4);margin-bottom:.5rem;line-height:1.5;background:var(--p4l);border-radius:6px;padding:.5rem .75rem">
+          <strong>1</strong> = Solo sabés cuánto facturaste. No medís llamadas, captaciones por semana, ni conversión de visitas a ofertas.<br>
+          <strong>10</strong> = Sabés exactamente cuántas acciones hace cada asesor, en qué parte del proceso se pierden las operaciones, y podés predecir los cierres del mes próximo.
+        </div>
+        <div class="scg" id="sg_lp4"></div>
+      </div>
+
+      <div class="nav-row">
+        <div></div>
+        <button class="btn btn-p" onclick="goB(1)">Siguiente → Contexto de la oficina</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         BLOQUE 1: CONTEXTO
+    ══════════════════════════════════════════════════════ -->
+    <div id="b1" class="sec">
+      <div class="sec-hdr sh-ctx"><div class="sec-icon" style="background:#e8e0d0">📋</div><div><h2>Tu oficina — contexto general</h2><p>Datos básicos para entender el punto de partida</p></div></div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">1</span>¿Hace cuánto tiempo está abierta tu oficina?</span>
+        <div class="rg" id="rg_q1">
+          <div class="ro" onclick="sr('q1',this,'menos1')"><input type="radio" name="q1"><label>Menos de 1 año — estoy en los primeros pasos</label></div>
+          <div class="ro" onclick="sr('q1',this,'1a2')"><input type="radio" name="q1"><label>Entre 1 y 2 años — estoy encontrando el ritmo</label></div>
+          <div class="ro" onclick="sr('q1',this,'2a4')"><input type="radio" name="q1"><label>Entre 2 y 4 años — ya tengo experiencia pero quiero crecer</label></div>
+          <div class="ro" onclick="sr('q1',this,'4a6')"><input type="radio" name="q1"><label>Entre 4 y 6 años — estoy en una etapa de despegue o estancamiento</label></div>
+          <div class="ro" onclick="sr('q1',this,'mas6')"><input type="radio" name="q1"><label>Más de 6 años — estoy consolidado pero quiero dar el siguiente salto</label></div>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">2</span>¿Cuántos asesores tiene tu equipo actualmente?</span>
+        <div class="g2" style="margin-top:4px">
+          <div><label class="fl" style="font-size:.6875rem">Total de asesores</label><input type="text" id="q2a" placeholder="Ej: 12" oninput="as()"></div>
+          <div><label class="fl" style="font-size:.6875rem">Que facturan consistentemente</label><input type="text" id="q2b" placeholder="Ej: 5" oninput="as()"></div>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">3</span>¿Cuál es hoy la principal fuente de ingresos de tu oficina?</span>
+        <div class="rg" id="rg_q3">
+          <div class="ro" onclick="sr('q3',this,'venta')"><input type="radio" name="q3"><label>Principalmente ventas de propiedades</label></div>
+          <div class="ro" onclick="sr('q3',this,'alquiler')"><input type="radio" name="q3"><label>Principalmente alquileres (gestión/administración)</label></div>
+          <div class="ro" onclick="sr('q3',this,'mixto')"><input type="radio" name="q3"><label>Mixto: ventas y alquileres en proporciones similares</label></div>
+          <div class="ro" onclick="sr('q3',this,'nuevos')"><input type="radio" name="q3"><label>Desarrollos / proyectos nuevos</label></div>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">4</span>¿Cuántas captaciones exclusivas tenés en cartera hoy? ¿Y cuántas en total (si tuvieras que incluir las compartidas)?</span>
+        <span class="qhint">La proporción entre exclusivas y totales es un dato importante para el diagnóstico.</span>
+        <div class="g2" style="margin-top:4px">
+          <div><label class="fl" style="font-size:.6875rem">Captaciones exclusivas</label><input type="text" id="q4a" placeholder="Ej: 8" oninput="as()"></div>
+          <div><label class="fl" style="font-size:.6875rem">Total en cartera (incluyendo compartidas)</label><input type="text" id="q4b" placeholder="Ej: 20" oninput="as()"></div>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">5</span>¿Cuántos cierres de venta tuviste en los últimos 3 meses?</span>
+        <input type="text" id="q5" placeholder="Número aproximado" oninput="as()" style="margin-top:4px">
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">6</span>¿Qué te hizo pensar en hacer este diagnóstico ahora? ¿Qué está pasando que te preocupa o que querés cambiar?</span>
+        <span class="qhint">Podés hablar de resultados, del equipo, de tu propio rol, de lo que sea. No hay respuesta incorrecta.</span>
+        <textarea id="q6" placeholder="Tu respuesta..." oninput="as()"></textarea>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn btn-s" onclick="goB(0)">← Anterior</button>
+        <button class="btn btn-p" onclick="goB(2)">Siguiente → Vos como líder</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         BLOQUE 2: P1 LIDERAZGO
+    ══════════════════════════════════════════════════════ -->
+    <div id="b2" class="sec">
+      <div class="sec-hdr sh-p1"><div class="sec-icon" style="background:var(--p1);color:white">🏢</div><div><h2>P1 — Vos como líder</h2><p>Tu rol, tu tiempo, tu identidad en la oficina</p></div></div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">7</span>Si dejaras de vender personalmente durante 3 meses, ¿qué pasaría en tu oficina?</span>
+        <span class="qhint">Pensá si tenés un sistema que funciona solo o si todo depende de que vos estés operando.</span>
+        <div class="rg" id="rg_q7">
+          <div class="ro" onclick="sr('q7',this,'igual')"><input type="radio" name="q7"><label>La oficina seguiría igual o creciendo — tengo un sistema</label></div>
+          <div class="ro" onclick="sr('q7',this,'baja')"><input type="radio" name="q7"><label>Bajaría el ritmo pero seguiría funcionando</label></div>
+          <div class="ro" onclick="sr('q7',this,'para')"><input type="radio" name="q7"><label>Se frenaría significativamente sin mí</label></div>
+          <div class="ro" onclick="sr('q7',this,'colapso')"><input type="radio" name="q7"><label>Virtualmente todo dependería de mi presencia</label></div>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">8</span>¿Qué porcentaje aproximado de la facturación total proviene de operaciones donde vos participás directamente?</span>
+        <div class="scg" id="sg_q8">
+          <button class="scb" onclick="ss('q8',10,'sg_q8')">10%</button>
+          <button class="scb" onclick="ss('q8',25,'sg_q8')">25%</button>
+          <button class="scb" onclick="ss('q8',50,'sg_q8')">50%</button>
+          <button class="scb" onclick="ss('q8',75,'sg_q8')">75%</button>
+          <button class="scb" onclick="ss('q8',90,'sg_q8')">90%+</button>
+        </div>
+
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">9</span>¿Cuál es tu estilo natural como líder de tu equipo?</span>
+        <span class="qhint">Podés marcar varias si te identificás con más de una.</span>
+        <div style="display:flex;flex-direction:column;gap:.375rem;margin-top:.5rem">
+          <label class="chk-opt"><input type="checkbox" name="q9" value="superv" onchange="as()"><span><strong>El que sabe y hace:</strong> Soy el más productivo de la oficina. Los demás me observan, me admiran, pero no llegan a mi nivel. El negocio gira alrededor de lo que yo produzco.</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q9" value="caotico" onchange="as()"><span><strong>El que tiene mil ideas:</strong> Tengo energía y visión, pero me cuesta mantener foco. Arranco cosas que no termino, el equipo no siempre entiende para dónde vamos.</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q9" value="amable" onchange="as()"><span><strong>El que cuida el clima:</strong> Para mí es importante que el equipo esté bien y que haya buen ambiente. Me cuesta exigir, confrontar o dar feedback difícil.</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q9" value="admin" onchange="as()"><span><strong>El que gestiona:</strong> Me dedico a que todo funcione, resolver problemas, atender lo urgente. El crecimiento y el desarrollo del equipo quedan para después.</span></label>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">10</span>¿A qué le decís sí que deberías decir no? ¿Qué seguís haciendo vos que podría hacer alguien de tu equipo?</span>
+        <span class="qhint">Por ejemplo: respondés consultas que podría responder un asesor, hacés las publicaciones, contestás WhatsApp a todas horas, resolvés problemas administrativos, acompañás visitas que un asesor podría hacer solo...</span>
+        <textarea id="q10" placeholder="Tu respuesta..." oninput="as()"></textarea>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">11</span>¿Cómo distribuís tu semana típica? ¿A qué le dedicás la mayor parte de tu tiempo?</span>
+        <span class="qhint">Por ejemplo: ¿cuántas horas le dedicás a operar (mostrar propiedades, negociar, captar)? ¿Cuánto tiempo a reunirte con el equipo o hacer seguimiento? ¿Cuánto a tareas administrativas, mails, redes, publicaciones?</span>
+        <textarea id="q11" placeholder="Tu respuesta..." oninput="as()"></textarea>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">12</span>Cuando un asesor no cumple objetivos, no prospecta o tiene bajo rendimiento, ¿qué hacés habitualmente?</span>
+        <span class="qhint">Por ejemplo: lo ignorás y esperás que mejore solo, lo confrontás directamente, buscás entender qué le pasa, le marcás los números, lo acompañás más de cerca... ¿Y cómo te sentís cuando tenés que encarar esa situación?</span>
+        <textarea id="q12" placeholder="Tu respuesta..." oninput="as()"></textarea>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">13</span>¿Por qué abriste esta oficina? ¿Qué querías construir que no podías construir siendo solo asesor? ¿Y cuál es hoy tu mayor miedo o preocupación respecto al crecimiento?</span>
+        <span class="qhint">Propósito original y frenos actuales — dos caras del mismo tema.</span>
+        <textarea id="q13" placeholder="Tu respuesta..." oninput="as()"></textarea>
+      </div>
+
+
+      <div class="nav-row">
+        <button class="btn btn-s" onclick="goB(1)">← Anterior</button>
+        <button class="btn btn-p" onclick="goB(3)">Siguiente → Tu equipo</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         BLOQUE 3: P2 EQUIPO
+    ══════════════════════════════════════════════════════ -->
+    <div id="b3" class="sec">
+      <div class="sec-hdr sh-p2"><div class="sec-icon" style="background:var(--p2);color:white">👥</div><div><h2>P2 — Tu equipo</h2><p>Cultura, personas, reclutamiento y desarrollo</p></div></div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">16</span>Si tuvieras que dividir a tu equipo en tres grupos, ¿cuántos hay en cada uno aproximadamente?</span>
+        <span class="qhint">No hace falta que sumen exacto, es una estimación.</span>
+        <div style="display:flex;flex-direction:column;gap:.625rem;margin-top:.5rem">
+          <div style="background:var(--p2l);border-radius:8px;padding:.75rem 1rem">
+            <div style="font-size:.875rem;font-weight:600;color:var(--p2);margin-bottom:2px">🟢 Los que traccionan solos</div>
+            <div style="font-size:.75rem;color:var(--muted);margin-bottom:.375rem">Proactivos, autónomos, producen resultados sin que estés encima.</div>
+            <input type="text" id="q16a" placeholder="Cantidad aproximada" oninput="as()" style="width:100%">
+          </div>
+          <div style="background:#fff8e8;border-radius:8px;padding:.75rem 1rem">
+            <div style="font-size:.875rem;font-weight:600;color:#7a5000;margin-bottom:2px">🟡 Los que podrían rendir más pero están frenados</div>
+            <div style="font-size:.75rem;color:var(--muted);margin-bottom:.375rem">Tienen potencial pero algo los bloquea — miedo, zona de confort, falta de método, falta de confianza.</div>
+            <input type="text" id="q16b" placeholder="Cantidad aproximada" oninput="as()" style="width:100%">
+          </div>
+          <div style="background:var(--p4l);border-radius:8px;padding:.75rem 1rem">
+            <div style="font-size:.875rem;font-weight:600;color:var(--p4);margin-bottom:2px">🔴 Los que no están comprometidos</div>
+            <div style="font-size:.75rem;color:var(--muted);margin-bottom:.375rem">No se comprometen, ponen excusas, o están esperando otra cosa. Es difícil que cambien.</div>
+            <input type="text" id="q16c" placeholder="Cantidad aproximada" oninput="as()" style="width:100%">
+          </div>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">17</span>¿Qué conversación se escucha habitualmente en tu equipo? ¿Cuáles son las frases o excusas que más se repiten?</span>
+        <textarea id="q17" placeholder="Tu respuesta..." oninput="as()"></textarea>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">18</span>Si tuvieras que describir la cultura de tu equipo con 3 palabras, ¿cuáles serían? ¿Es la cultura que querés o la que te encontraste?</span>
+        <span class="qhint">Ejemplos: proactiva, reactiva, comprometida, individualista, colaborativa, competitiva, cómoda, exigente, desordenada, con energía, desmotivada, dependiente...</span>
+        <textarea id="q18" placeholder="Tu respuesta..." oninput="as()"></textarea>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">19</span>¿Cómo incorporás y acompañás a los nuevos asesores?</span>
+        <div class="rg" id="rg_q19">
+          <div class="ro" onclick="sr('q19',this,'proceso')"><input type="radio" name="q19"><label>Tengo un proceso claro: etapas, formación, acompañamiento y métricas de integración</label></div>
+          <div class="ro" onclick="sr('q19',this,'informal')"><input type="radio" name="q19"><label>Hay algo informal: les presento el equipo, explico un poco y van aprendiendo</label></div>
+          <div class="ro" onclick="sr('q19',this,'arreglate')"><input type="radio" name="q19"><label>"Arreglate": aprenden observando a otros y con la práctica</label></div>
+          <div class="ro" onclick="sr('q19',this,'nada')"><input type="radio" name="q19"><label>No tengo proceso de incorporación definido</label></div>
+        </div>
+        <span class="qhint" style="margin-top:.5rem;display:block">¿Hay alguien que lo mentoriza o acompaña? ¿Cómo decidís si tiene futuro en la oficina?</span>
+        <textarea id="q20" placeholder="Contá cómo funciona en la práctica..." oninput="as()" style="margin-top:.375rem"></textarea>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">21</span>¿Cuál es la rotación de asesores en tu oficina en el último año?</span>
+        <div class="rg" id="rg_q21">
+          <div class="ro" onclick="sr('q21',this,'baja')"><input type="radio" name="q21"><label>Baja — el equipo es estable, muy pocos se van</label></div>
+          <div class="ro" onclick="sr('q21',this,'media')"><input type="radio" name="q21"><label>Media — algunos entran y salen cada año, es normal</label></div>
+          <div class="ro" onclick="sr('q21',this,'alta')"><input type="radio" name="q21"><label>Alta — mucho movimiento, me cuesta retener asesores</label></div>
+          <div class="ro" onclick="sr('q21',this,'muy_alta')"><input type="radio" name="q21"><label>Muy alta — estoy constantemente reclutando para reponer</label></div>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">22</span>¿Tenés asesores con potencial que no están rindiendo lo que podrían? ¿Qué creés que los frena?</span>
+        <textarea id="q22" placeholder="Tu respuesta..." oninput="as()"></textarea>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">23</span>¿Tenés alguien que te ayude con las tareas operativas — publicaciones, turnos, coordinación, administración?</span>
+        <span class="qhint">Por ejemplo: una asistente, coordinadora, community manager. Si no tenés, ¿qué te frena para incorporarla?</span>
+        <div class="rg" id="rg_q23">
+          <div class="ro" onclick="sr('q23',this,'si_full')"><input type="radio" name="q23"><label>Sí — tengo alguien que gestiona lo operativo y me libera tiempo</label></div>
+          <div class="ro" onclick="sr('q23',this,'si_partial')"><input type="radio" name="q23"><label>Parcialmente — hay alguien pero no cubre todo lo que necesito</label></div>
+          <div class="ro" onclick="sr('q23',this,'no_dinero')"><input type="radio" name="q23"><label>No — me gustaría pero siento que todavía no puedo pagarlo</label></div>
+          <div class="ro" onclick="sr('q23',this,'no_control')"><input type="radio" name="q23"><label>No — prefiero manejarlo yo mismo por ahora</label></div>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">24</span>Si tu equipo duplicara su tamaño mañana, ¿tu sistema actual funcionaría sin generar caos?</span>
+        <div class="rg" id="rg_q24">
+          <div class="ro" onclick="sr('q24',this,'si')"><input type="radio" name="q24"><label>Sí — tengo procesos, herramientas y estructura para escalarlo</label></div>
+          <div class="ro" onclick="sr('q24',this,'parcial')"><input type="radio" name="q24"><label>Parcialmente — algunas cosas funcionarían, otras serían caos</label></div>
+          <div class="ro" onclick="sr('q24',this,'no')"><input type="radio" name="q24"><label>No — todo depende de mí y de que estén las personas correctas</label></div>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn btn-s" onclick="goB(2)">← Anterior</button>
+        <button class="btn btn-p" onclick="goB(4)">Siguiente → Sistema de trabajo</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         BLOQUE 4: P3 PROCESOS
+    ══════════════════════════════════════════════════════ -->
+    <div id="b4" class="sec">
+      <div class="sec-hdr sh-p3"><div class="sec-icon" style="background:var(--p3);color:white">⚙️</div><div><h2>P3 — Sistema de trabajo</h2><p>Procesos, método comercial y operación diaria</p></div></div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">25</span>¿Todos tus asesores siguen el mismo proceso de ventas o cada uno trabaja a su manera?</span>
+        <div class="rg" id="rg_q25">
+          <div class="ro" onclick="sr('q25',this,'todos')"><input type="radio" name="q25"><label>Todos siguen el mismo proceso — hay un método claro y compartido</label></div>
+          <div class="ro" onclick="sr('q25',this,'lineas')"><input type="radio" name="q25"><label>Hay lineamientos generales pero cada uno los adapta a su estilo</label></div>
+          <div class="ro" onclick="sr('q25',this,'cada_uno')"><input type="radio" name="q25"><label>Cada uno trabaja a su manera — no hay proceso comercial común</label></div>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">26</span>En tu proceso comercial, ¿dónde se "rompe" más seguido?</span>
+        <span class="qhint">Pensá en las tres etapas: conseguir propiedades exclusivas, acordar el precio con el propietario, o cerrar la operación con el comprador.</span>
+        <div class="rg" id="rg_q26">
+          <div class="ro" onclick="sr('q26',this,'captacion')"><input type="radio" name="q26"><label><strong>En la captación</strong> — conseguir que los propietarios nos den la exclusiva es el mayor problema</label></div>
+          <div class="ro" onclick="sr('q26',this,'ajuste')"><input type="radio" name="q26"><label><strong>En el ajuste de precio</strong> — captamos pero los propietarios no aceptan valores de mercado</label></div>
+          <div class="ro" onclick="sr('q26',this,'cierre')"><input type="radio" name="q26"><label><strong>En el cierre</strong> — hay interesados pero no logramos convertirlos en operaciones</label></div>
+          <div class="ro" onclick="sr('q26',this,'varios')"><input type="radio" name="q26"><label><strong>En varias etapas</strong> — hay problemas en más de un momento del proceso</label></div>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">27</span>¿Tus asesores prospectan activamente, con una base de contactos que trabajan de forma sistemática?</span>
+        <span class="qhint">¿Llaman, visitan, generan leads por su cuenta — o esperan que lleguen consultas?</span>
+        <div class="rg" id="rg_q27">
+          <div class="ro" onclick="sr('q27',this,'proactivo')"><input type="radio" name="q27"><label>Sí — prospectan activamente, tienen una base de contactos y la trabajan con regularidad</label></div>
+          <div class="ro" onclick="sr('q27',this,'mixto')"><input type="radio" name="q27"><label>Algunos lo hacen, otros esperan que lleguen consultas</label></div>
+          <div class="ro" onclick="sr('q27',this,'reactivo')"><input type="radio" name="q27"><label>La mayoría es reactiva — trabaja lo que entra, no genera proactivamente</label></div>
+          <div class="ro" onclick="sr('q27',this,'no_sabe')"><input type="radio" name="q27"><label>No lo sé con certeza — no tengo visibilidad sobre cómo cada uno genera negocio</label></div>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">28</span>¿Tus asesores tienen una agenda semanal estructurada? ¿Saben qué actividades priorizar cada día?</span>
+        <div class="rg" id="rg_q28">
+          <div class="ro" onclick="sr('q28',this,'si')"><input type="radio" name="q28"><label>Sí — hay una agenda tipo con actividades prioritarias claras</label></div>
+          <div class="ro" onclick="sr('q28',this,'parcial')"><input type="radio" name="q28"><label>Parcialmente — se habla de prioridades pero no se plasma en la agenda real</label></div>
+          <div class="ro" onclick="sr('q28',this,'no')"><input type="radio" name="q28"><label>No — cada uno gestiona su tiempo como puede, son reactivos</label></div>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">29</span>¿Usás algún CRM o sistema para gestionar el pipeline de operaciones?</span>
+        <div class="rg" id="rg_q29">
+          <div class="ro" onclick="sr('q29',this,'crm_activo')"><input type="radio" name="q29"><label>Sí — CRM activo, pipeline actualizado, todos lo usan</label></div>
+          <div class="ro" onclick="sr('q29',this,'crm_poco')"><input type="radio" name="q29"><label>Tenemos una herramienta pero no se usa consistentemente</label></div>
+          <div class="ro" onclick="sr('q29',this,'excel')"><input type="radio" name="q29"><label>Excel, planillas o WhatsApp — algo artesanal</label></div>
+          <div class="ro" onclick="sr('q29',this,'nada')"><input type="radio" name="q29"><label>No tenemos sistema de gestión de pipeline</label></div>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn btn-s" onclick="goB(3)">← Anterior</button>
+        <button class="btn btn-p" onclick="goB(5)">Siguiente → Métricas y resultados</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         BLOQUE 5: P4 PERFORMANCE
+    ══════════════════════════════════════════════════════ -->
+    <div id="b5" class="sec">
+      <div class="sec-hdr sh-p4"><div class="sec-icon" style="background:var(--p4);color:white">📊</div><div><h2>P4 — Métricas y resultados</h2><p>Cómo medís, gestionás y seguís la performance</p></div></div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">30</span>¿Qué miden actualmente en tu oficina?</span>
+        <span class="qhint">Hay dos tipos de métricas: las de actividad (llamadas, reuniones, captaciones intentadas, visitas) y las de resultado (cierres, facturación). ¿Cuál trackean?</span>
+        <div class="rg" id="rg_q30">
+          <div class="ro" onclick="sr('q30',this,'todo')"><input type="radio" name="q30"><label>Medimos actividad semanal <em>y</em> resultados — cada asesor sabe cuántas acciones hace y su tasa de conversión</label></div>
+          <div class="ro" onclick="sr('q30',this,'solo_result')"><input type="radio" name="q30"><label>Medimos resultados (cierres, facturación) pero no el detalle de actividad diaria</label></div>
+          <div class="ro" onclick="sr('q30',this,'factura')"><input type="radio" name="q30"><label>Básicamente solo sabemos cuánto facturamos</label></div>
+          <div class="ro" onclick="sr('q30',this,'nada')"><input type="radio" name="q30"><label>No medimos nada de forma sistemática</label></div>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">31</span>¿Tenés una reunión semanal con tu equipo? ¿De qué se habla habitualmente?</span>
+        <div class="rg" id="rg_q31">
+          <div class="ro" onclick="sr('q31',this,'numeros')"><input type="radio" name="q31"><label>Sí — reunión semanal basada en números, cada asesor presenta sus métricas y analizamos desvíos</label></div>
+          <div class="ro" onclick="sr('q31',this,'motivacion')"><input type="radio" name="q31"><label>Sí — pero es más de capacitación, motivación o novedades del mercado</label></div>
+          <div class="ro" onclick="sr('q31',this,'esporadica')"><input type="radio" name="q31"><label>Reuniones esporádicas, sin estructura ni regularidad</label></div>
+          <div class="ro" onclick="sr('q31',this,'no')"><input type="radio" name="q31"><label>No tenemos reuniones regulares</label></div>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn btn-s" onclick="goB(4)">← Anterior</button>
+        <button class="btn btn-p" onclick="goB(6)">Siguiente → Tu mundo interno</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         BLOQUE 6: MINDSET (NUEVO)
+    ══════════════════════════════════════════════════════ -->
+    <div id="b6" class="sec">
+      <div class="sec-hdr sh-pm"><div class="sec-icon" style="background:var(--pm);color:white">🧠</div><div><h2>Tu mundo interno como líder</h2><p>Creencias, narrativas y lo que te frena desde adentro</p></div></div>
+
+      <div class="nota-info">
+        Este bloque va un poco más adentro. No hay respuestas correctas — y lo que escribas acá no se comparte con nadie más que con Ricardo. Es información para el coaching, no para juzgarte.
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">32</span>¿Cuál es la frase que más te decís a vos mismo cuando algo no funciona en la oficina?</span>
+        <span class="qhint">Esa voz interna que aparece cuando hay un mes flojo, cuando un asesor no rinde, cuando algo se rompe. ¿Qué te decís?</span>
+        <textarea id="q32" placeholder="Tu respuesta..." oninput="as()"></textarea>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">33</span>¿Hay algo que sabés que tendrías que hacer — o dejar de hacer — pero no lo estás haciendo? ¿Qué creés que te lo impide?</span>
+        <span class="qhint">No se trata de lo que no sabés cómo hacer, sino de lo que sabés que tenés que hacer pero algo te frena.</span>
+        <textarea id="q33" placeholder="Tu respuesta..." oninput="as()"></textarea>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">34</span>¿Con cuáles de estas frases te identificás? Podés marcar varias.</span>
+        <div style="display:flex;flex-direction:column;gap:.375rem;margin-top:.5rem">
+          <label class="chk-opt"><input type="checkbox" name="q34" value="si_no_yo" onchange="as()"><span>"Si no lo hago yo, no sale bien."</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q34" value="llamar_molestar" onchange="as()"><span>"Llamar a alguien para ofrecerle algo es molestar."</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q34" value="mercado_dificil" onchange="as()"><span>"El mercado está difícil — no es el momento para exigir más."</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q34" value="primero_equipo" onchange="as()"><span>"Necesito tener el equipo completo antes de organizarme."</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q34" value="delegar_control" onchange="as()"><span>"Si delego, pierdo el control de la calidad."</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q34" value="confrontar_malo" onchange="as()"><span>"Confrontar a alguien del equipo daña la relación y el clima."</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q34" value="crecer_problemas" onchange="as()"><span>"Crecer significa más problemas y menos libertad."</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q34" value="merezco_exito" onchange="as()"><span>"No estoy seguro de merecer o poder sostener el éxito si crece mucho."</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q34" value="ninguna" onchange="as()"><span>Ninguna de estas me representa.</span></label>
+        </div>
+        <div style="margin-top:.5rem">
+          <label style="font-size:.75rem;font-weight:500;display:block;margin-bottom:4px;color:var(--muted)">Alguna otra que aparezca (opcional):</label>
+          <textarea id="q34b" placeholder="Opcional..." oninput="as()" style="min-height:52px" data-optional="true"></textarea>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn btn-s" onclick="goB(5)">← Anterior</button>
+        <button class="btn btn-p" onclick="goB(7)">Siguiente → Visión y expectativas</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         BLOQUE 7: VISIÓN
+    ══════════════════════════════════════════════════════ -->
+    <div id="b7" class="sec">
+      <div class="sec-hdr sh-vis"><div class="sec-icon" style="background:#7b5ea7;color:white">🎯</div><div><h2>Visión y expectativas</h2><p>Para qué estás haciendo esto y qué querés lograr</p></div></div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">35</span>Si la ayuda de Ricardo funcionara perfectamente, ¿qué UNA SOLA COSA estaría pasando diferente en tu oficina en 6 meses que hoy no está pasando?</span>
+        <span class="qhint">Solo una. Elegí la que más importa — esa prioridad dice mucho sobre dónde está el quiebre real.</span>
+        <textarea id="q35" placeholder="Tu respuesta..." oninput="as()" style="min-height:56px"></textarea>
+      </div>
+
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">36</span>¿Qué te limita a vos como broker para crecer hoy? Marcá todo lo que se aplique.</span>
+        <div style="display:flex;flex-direction:column;gap:.375rem;margin-top:.5rem">
+          <label class="chk-opt"><input type="checkbox" name="q37" value="habilidad" onchange="as()"><span><strong>Habilidad</strong> — me falta desarrollar algo concreto: saber liderar, dar feedback, negociar, manejar el equipo...</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q37" value="sistema" onchange="as()"><span><strong>Sistema</strong> — tengo la habilidad pero me falta orden: un método claro, procesos definidos, herramientas que funcionen</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q37" value="decision" onchange="as()"><span><strong>Decisión</strong> — sé qué tendría que hacer pero me cuesta dar el paso o mantenerlo en el tiempo</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q37" value="tiempo" onchange="as()"><span><strong>Tiempo</strong> — estoy tan metido en el día a día operativo que no tengo espacio para pensar estratégicamente</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q37" value="equipo" onchange="as()"><span><strong>Equipo</strong> — no tengo las personas correctas o no logro que produzcan</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q37" value="confianza" onchange="as()"><span><strong>Confianza</strong> — me cuesta delegar porque siento que nadie lo va a hacer como yo</span></label>
+          <label class="chk-opt"><input type="checkbox" name="q37" value="creencias" onchange="as()"><span><strong>Algo interno</strong> — hay algo en mi forma de pensar o de verme que me frena, aunque no sé bien qué</span></label>
+        </div>
+        <div style="margin-top:.5rem">
+          <label style="font-size:.75rem;font-weight:500;display:block;margin-bottom:4px;color:var(--muted)">Desarrollá o agregá algo más:</label>
+          <textarea id="q37b" placeholder="Tu respuesta..." style="min-height:56px" oninput="as()"></textarea>
+        </div>
+      </div>
+
+      <div class="qblock">
+        <span class="qlabel"><span class="qnum">37</span>¿Hay algo más que quieras contarle a tu coach sobre tu oficina, tu equipo o vos mismo que sea relevante para el diagnóstico?</span>
+        <span class="qhint">Espacio libre — cualquier cosa que sientas importante y que no haya aparecido antes.</span>
+        <textarea id="q38" placeholder="Espacio libre..." oninput="as()"></textarea>
+      </div>
+
+      <div class="nota-info">
+        <strong>Antes de enviar.</strong> Al presionar el botón de abajo, se va a abrir WhatsApp con todas tus respuestas listas para enviar a Ricardo. Si cerrás WhatsApp sin enviar, podés volver acá y presionar el botón de nuevo.
+      </div>
+
+      <div class="nav-row">
+        <button class="btn btn-s" onclick="goB(6)">← Anterior</button>
+        <button class="btn btn-ok" onclick="finalizar()" style="padding:11px 24px;font-size:.875rem">✓ Completar y enviar al coach</button>
+      </div>
+    </div>
+
+  </div><!-- /fmain -->
+</div><!-- /form-wrap -->
+
+<!-- ══ DONE ════════════════════════════════════════════════ -->
+<div id="done-screen">
+  <div class="done-box">
+    <div class="done-icon">✅</div>
+    <h2>¡Cuestionario completado!</h2>
+    <p>¡Genial! El paso siguiente es enviarle todas tus respuestas a Ricardo para que las analice y te prepare un diagnóstico y un plan de trabajo a medida. Tocá el botón para enviárselas por WhatsApp.</p>
+    <button class="wa-btn" onclick="(function(){const text=buildText(collect());window.open('https://wa.me/'+COACH_WA+'?text='+encodeURIComponent(text),'_blank');})()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Enviar por WhatsApp
+    </button>
+    <div class="edit-link" onclick="volverEditar()">← Volver a revisar mis respuestas</div>
+  </div>
+  <div style="margin-top:1.5rem;font-size:.625rem;color:var(--faint);font-style:italic">Ricardo Gabisson - Coach Ejecutivo e Inmobiliario</div>
+</div>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────
+const COACH_WA = '541152214030';
+const TOTAL_B = 7; // bloques 0..7
+
+// ─── STATE ───────────────────────────────────────────────
+const SC = {};
+const RD = {};
+const SK = 'diag_broker_v2';
+let curB = 0;
+
+// ─── AUTOSAVE ────────────────────────────────────────────
+function as() {
+  document.getElementById('sdot').className = 'sdot spin';
+  document.getElementById('stxt').textContent = 'Guardando...';
+  clearTimeout(window._st);
+  window._st = setTimeout(() => {
+    try { localStorage.setItem(SK, JSON.stringify(collect())); } catch(e) {}
+    document.getElementById('sdot').className = 'sdot ok';
+    document.getElementById('stxt').textContent = 'Guardado · ' + new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  }, 700);
+}
+
+// ─── SCALES ──────────────────────────────────────────────
+function ss(key, val, gid) {
+  SC[key] = val;
+  document.querySelectorAll('#'+gid+' .scb').forEach(b => b.classList.remove('sel'));
+  event.currentTarget.classList.add('sel');
+  as();
+}
+function build10(gid, key) {
+  const c = document.getElementById(gid); if(!c) return; c.innerHTML = '';
+  for(let i=1;i<=10;i++){
+    const b = document.createElement('button');
+    b.className = 'scb' + (SC[key]===i?' sel':'');
+    b.textContent = i;
+    b.onclick = () => { SC[key]=i; c.querySelectorAll('.scb').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); as(); };
+    c.appendChild(b);
+  }
+}
+build10('sg_lp1','lp1');
+build10('sg_lp2','lp2');
+build10('sg_lp3','lp3');
+build10('sg_lp4','lp4');
+
+// ─── RADIOS ──────────────────────────────────────────────
+function sr(key, el, val) {
+  RD[key] = val;
+  el.closest('.rg').querySelectorAll('.ro').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+  el.querySelector('input').checked = true;
+  as();
+}
+
+// ─── NAVIGATION ──────────────────────────────────────────
+const v = id => (document.getElementById(id)||{value:''}).value.trim();
+
+function startForm() {
+  const nombre = v('c_nombre');
+  if(!nombre) {
+    document.getElementById('c_nombre').focus();
+    document.getElementById('c_nombre').style.borderColor = '#c00';
+    setTimeout(()=>{ document.getElementById('c_nombre').style.borderColor=''; }, 2000);
+    return;
+  }
+  const clave = document.getElementById('c_clave').value.trim().toLowerCase();
+  if(clave !== 'coachrg') {
+    document.getElementById('clave-error').style.display = 'block';
+    document.getElementById('c_clave').focus();
+    document.getElementById('c_clave').style.borderColor = '#c00';
+    setTimeout(()=>{ document.getElementById('c_clave').style.borderColor=''; }, 2000);
+    return;
+  }
+  document.getElementById('clave-error').style.display = 'none';
+  document.getElementById('cover').style.display = 'none';
+  document.getElementById('form-wrap').style.display = 'block';
+  document.getElementById('hdr-name').textContent = nombre + (v('c_oficina') ? ' · '+v('c_oficina') : '');
+  curB = 0;
+  as();
+  goB(0);
+}
+
+const BLOCK_LABELS = ['Autoevaluación inicial','Contexto de la oficina','Vos como líder','Tu equipo','Sistema de trabajo','Métricas y resultados','Tu mundo interno','Visión y expectativas'];
+
+function validateBlock(n) {
+  const sec = document.getElementById('b'+n);
+  if(!sec) return true;
+  const errors = [];
+
+  // Escalas (scg) — al menos un botón seleccionado
+  sec.querySelectorAll('.scg').forEach(scg => {
+    const sel = scg.querySelector('.scb.sel');
+    if(!sel) {
+      scg.style.outline = '2px solid #c00';
+      scg.style.borderRadius = '8px';
+      errors.push('escala');
+    } else {
+      scg.style.outline = '';
+    }
+  });
+
+  // Radios — al menos una opción seleccionada por grupo
+  const radioNames = [...new Set([...sec.querySelectorAll('input[type=radio]')].map(r=>r.name))];
+  radioNames.forEach(name => {
+    const checked = sec.querySelector('input[name="'+name+'"]:checked');
+    const rg = sec.querySelector('#rg_'+name) || sec.querySelector('[name="'+name+'"]')?.closest('.rg');
+    if(!checked) {
+      if(rg) { rg.style.outline = '2px solid #c00'; rg.style.borderRadius = '8px'; }
+      errors.push('radio '+name);
+    } else {
+      if(rg) rg.style.outline = '';
+    }
+  });
+
+  // Checkboxes por grupo (name) — al menos uno marcado
+  const chkNames = [...new Set([...sec.querySelectorAll('input[type=checkbox]')].map(c=>c.name))];
+  chkNames.forEach(name => {
+    const checked = sec.querySelector('input[name="'+name+'"]:checked');
+    const grp = sec.querySelector('input[name="'+name+'"]')?.closest('.qblock');
+    if(!checked) {
+      if(grp) { grp.style.outline = '2px solid #c00'; grp.style.borderRadius = '10px'; }
+      errors.push('chk '+name);
+    } else {
+      if(grp) grp.style.outline = '';
+    }
+  });
+
+  // Textareas — no vacíos (salvo los marcados como opcionales)
+  sec.querySelectorAll('textarea').forEach(ta => {
+    if(ta.dataset.optional === 'true') { ta.style.borderColor = ''; return; }
+    if(!ta.value.trim()) {
+      ta.style.borderColor = '#c00';
+      errors.push('textarea '+ta.id);
+    } else {
+      ta.style.borderColor = '';
+    }
+  });
+
+  // Inputs text dentro del bloque (excepto el de cover que ya está validado)
+  sec.querySelectorAll('input[type=text]').forEach(inp => {
+    if(!inp.value.trim()) {
+      inp.style.borderColor = '#c00';
+      errors.push('text '+inp.id);
+    } else {
+      inp.style.borderColor = '';
+    }
+  });
+
+  if(errors.length > 0) {
+    // Mostrar mensaje de error
+    let errDiv = document.getElementById('val-err-'+n);
+    if(!errDiv) {
+      errDiv = document.createElement('div');
+      errDiv.id = 'val-err-'+n;
+      errDiv.style.cssText = 'background:#fff0f0;border:1px solid #e0b0b0;border-radius:8px;padding:.75rem 1rem;margin-top:.75rem;font-size:.85rem;color:#c00;line-height:1.5';
+      errDiv.textContent = 'Por favor completá todas las preguntas antes de continuar.';
+      const nav = sec.querySelector('.nav-row');
+      if(nav) sec.insertBefore(errDiv, nav);
+    }
+    errDiv.style.display = 'block';
+    // Scroll al primer error
+    const firstErr = sec.querySelector('.scg[style*="outline"], .rg[style*="outline"], textarea[style*="border-color"], input[style*="border-color"], .qblock[style*="outline"]');
+    if(firstErr) firstErr.scrollIntoView({behavior:'smooth', block:'center'});
+    return false;
+  }
+
+  // Ocultar error si todo OK
+  const errDiv = document.getElementById('val-err-'+n);
+  if(errDiv) errDiv.style.display = 'none';
+  return true;
+}
+
+function goB(n) {
+  // Si avanzamos (n > curB), validar el bloque actual
+  if(n > curB) {
+    if(!validateBlock(curB)) return;
+  }
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.getElementById('b'+n).classList.add('on');
+  curB = n;
+  document.getElementById('hdr-step').textContent = 'Bloque '+(n+1)+' de '+(TOTAL_B+1)+' — '+BLOCK_LABELS[n];
+  document.getElementById('pbar').style.width = (n/TOTAL_B*100)+'%';
+  as();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─── COLLECT ─────────────────────────────────────────────
+function getChecks(name) {
+  return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(cb=>cb.value).join(', ');
+}
+
+function collect() {
+  return {
+    cn: v('c_nombre'), co: v('c_oficina'),
+    // autoevaluación
+    sc_lp1: SC.lp1||0, sc_lp2: SC.lp2||0, sc_lp3: SC.lp3||0, sc_lp4: SC.lp4||0,
+    // bloque 1
+    q1: RD.q1||'', q2a: v('q2a'), q2b: v('q2b'), q3: RD.q3||'',
+    q4a: v('q4a'), q4b: v('q4b'), q5: v('q5'), q6: v('q6'),
+    // bloque 2
+    q7: RD.q7||'', sc_q8: SC.q8||0, q9_checks: getChecks('q9'),
+    q10: v('q10'), q11: v('q11'), q12: v('q12'), q13: v('q13'), q14: v('q14'), q15: RD.q15||'',
+    // bloque 3
+    q16a: v('q16a'), q16b: v('q16b'), q16c: v('q16c'),
+    q17: v('q17'), q18: v('q18'), q19: RD.q19||'', q20: v('q20'),
+    q21: RD.q21||'', q22: v('q22'), q23: RD.q23||'', q24: RD.q24||'',
+    // bloque 4
+    q25: RD.q25||'', q26: RD.q26||'', q27: RD.q27||'', q28: RD.q28||'', q29: RD.q29||'',
+    // bloque 5
+    q30: RD.q30||'', q31: RD.q31||'',
+    // bloque 6 mindset
+    q32: v('q32'), q33: v('q33'),
+    q34_checks: getChecks('q34'), q34b: v('q34b'),
+    // bloque 7 visión
+    q35: v('q35'),
+    q37_checks: getChecks('q37'), q37b: v('q37b'),
+    q38: v('q38'),
+    _b: curB, _ts: new Date().toISOString()
+  };
+}
+
+// ─── BUILD TEXT ───────────────────────────────────────────
+function buildText(d) {
+  const L = '─'.repeat(48);
+  const r = (v, map) => map[v] || v || 'sin respuesta';
+  const q1m = {menos1:'Menos de 1 año','1a2':'1 a 2 años','2a4':'2 a 4 años','4a6':'4 a 6 años',mas6:'Más de 6 años'};
+  const q3m = {venta:'Principalmente ventas',alquiler:'Principalmente alquileres',mixto:'Mixto ventas y alquileres',nuevos:'Desarrollos / proyectos nuevos'};
+  const q7m = {igual:'La oficina seguiría igual',baja:'Bajaría pero seguiría',para:'Se frenaría significativamente',colapso:'Todo dependería de mi presencia'};
+
+  const q15m = {claro:'Sí, claridad total sobre costos y margen',aprox:'Más o menos, idea general',no:'No, sin claridad financiera'};
+  const q19m = {proceso:'Proceso claro con etapas',informal:'Algo informal',arreglate:'"Arreglate"',nada:'Sin proceso'};
+  const q21m = {baja:'Baja',media:'Media',alta:'Alta',muy_alta:'Muy alta'};
+  const q23m = {si_full:'Sí, cubro bien lo operativo',si_partial:'Parcialmente',no_dinero:'No, no puedo pagarlo aún',no_control:'No, prefiero manejarlo yo'};
+  const q24m = {si:'Sí funcionaría',parcial:'Parcialmente',no:'No, sería caos'};
+  const q25m = {todos:'Todos siguen el mismo proceso',lineas:'Lineamientos generales',cada_uno:'Cada uno a su manera'};
+  const q26m = {captacion:'En la captación',ajuste:'En el ajuste de precio',cierre:'En el cierre',varios:'En varias etapas'};
+  const q27m = {proactivo:'Prospectan activamente',mixto:'Algunos proactivos, otros reactivos',reactivo:'La mayoría es reactiva',no_sabe:'No tengo visibilidad'};
+  const q28m = {si:'Sí, agenda estructurada',parcial:'Parcialmente',no:'No, son reactivos'};
+  const q29m = {crm_activo:'CRM activo y usado',crm_poco:'Herramienta poco usada',excel:'Excel/WhatsApp',nada:'Sin sistema de pipeline'};
+  const q30m = {todo:'Trackeo completo actividad+resultados',solo_result:'Solo resultados',factura:'Solo facturación',nada:'No medimos nada'};
+  const q31m = {numeros:'Reunión semanal basada en números',motivacion:'Reunión de motivación/capacitación',esporadica:'Reuniones esporádicas',no:'Sin reuniones regulares'};
+
+  return `DIAGNÓSTICO DE OFICINA INMOBILIARIA
+${L}
+Broker: ${d.cn||'no indicado'}
+Oficina: ${d.co||'no indicado'}
+Fecha: ${new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'})}
+
+AUTOEVALUACIÓN 4P (escala 1–10)
+P1 Liderazgo:  ${d.sc_lp1}/10
+P2 Equipo:     ${d.sc_lp2}/10
+P3 Procesos:   ${d.sc_lp3}/10
+P4 Resultados: ${d.sc_lp4}/10
+${L}
+BLOQUE 1 — CONTEXTO
+1. Antigüedad: ${r(d.q1, q1m)}
+2. Equipo: ${d.q2a||'—'} asesores totales | ${d.q2b||'—'} facturan consistentemente
+3. Fuente de ingresos: ${r(d.q3, q3m)}
+4. Captaciones: ${d.q4a||'—'} exclusivas / ${d.q4b||'—'} totales en cartera
+5. Cierres últimos 3 meses: ${d.q5||'—'}
+6. ¿Por qué ahora?
+${d.q6||'sin respuesta'}
+${L}
+BLOQUE 2 — P1 LIDERAZGO
+7. Si dejaras de vender 3 meses: ${r(d.q7, q7m)}
+8. % facturación que pasa por vos: ${d.sc_q8||'—'}%
+9. Estilo de liderazgo: ${d.q9_checks||'sin respuesta'}
+10. ¿A qué le decís sí que deberías decir no?
+${d.q10||'sin respuesta'}
+11. Distribución semana típica:
+${d.q11||'sin respuesta'}
+12. Cuando un asesor no cumple:
+${d.q12||'sin respuesta'}
+13. Mayor miedo respecto al crecimiento:
+${d.q13||'sin respuesta'}
+14. ¿Por qué abriste la oficina?
+${d.q14||'sin respuesta'}
+15. Claridad financiera: ${r(d.q15, q15m)}
+${L}
+BLOQUE 3 — P2 EQUIPO
+16. Arquetipos del equipo:
+  🟢 Traccionan solos: ${d.q16a||'—'}
+  🟡 Potencial bloqueado: ${d.q16b||'—'}
+  🔴 De paso / resistentes: ${d.q16c||'—'}
+17. Conversación habitual en el equipo:
+${d.q17||'sin respuesta'}
+18. Cultura en 3 palabras:
+${d.q18||'sin respuesta'}
+19. Incorporación de nuevos asesores: ${r(d.q19, q19m)}
+20. Sistema de acompañamiento:
+${d.q20||'sin respuesta'}
+21. Rotación: ${r(d.q21, q21m)}
+22. Asesores con potencial bloqueado:
+${d.q22||'sin respuesta'}
+23. Soporte operativo: ${r(d.q23, q23m)}
+24. ¿Escala si duplica el equipo?: ${r(d.q24, q24m)}
+${L}
+BLOQUE 4 — P3 PROCESOS
+25. Proceso de ventas: ${r(d.q25, q25m)}
+26. Dónde se rompe el proceso: ${r(d.q26, q26m)}
+27. Prospección activa: ${r(d.q27, q27m)}
+28. Agenda estructurada: ${r(d.q28, q28m)}
+29. CRM / pipeline: ${r(d.q29, q29m)}
+${L}
+BLOQUE 5 — P4 MÉTRICAS
+30. ¿Qué miden?: ${r(d.q30, q30m)}
+31. Reunión semanal: ${r(d.q31, q31m)}
+${L}
+BLOQUE 6 — MINDSET
+32. Frase interna cuando algo no funciona:
+${d.q32||'sin respuesta'}
+33. Lo que sabe que debería hacer y no hace:
+${d.q33||'sin respuesta'}
+34. Creencias con las que se identifica:
+${d.q34_checks||'ninguna seleccionada'}
+${d.q34b ? 'Otras: '+d.q34b : ''}
+${L}
+BLOQUE 7 — VISIÓN Y EXPECTATIVAS
+35. UNA cosa diferente en 6 meses:
+${d.q35||'sin respuesta'}
+37. ¿Qué limita el crecimiento?:
+${d.q37_checks||'ninguno seleccionado'}\n${d.q37b||''}
+38. Información adicional:
+${d.q38||'ninguna'}
+${L}
+Enviado desde el cuestionario de Coach Ricardo Gabisson`;
+}
+
+// ─── LOAD SAVED ──────────────────────────────────────────
+function loadSaved() {
+  try {
+    const raw = localStorage.getItem(SK);
+    if(!raw) return false;
+    const d = JSON.parse(raw);
+    // textos
+    const tids = ['q2a','q2b','q4a','q4b','q5','q6','q10','q11','q12','q13','q14','q17','q18','q20','q22','q32','q33','q34b','q35','q37b','q38'];
+    tids.forEach(id => { if(d[id]){ const el=document.getElementById(id); if(el) el.value=d[id]; }});
+    if(d.cn) document.getElementById('c_nombre').value = d.cn;
+    if(d.co) document.getElementById('c_oficina').value = d.co;
+    // radios
+    const radios = ['q1','q3','q7','q15','q19','q21','q23','q24','q25','q26','q27','q28','q29','q30','q31'];
+    radios.forEach(k => { if(d[k]) restoreRadio(k, d[k]); });
+    // scales 1-10
+    ['lp1','lp2','lp3','lp4'].forEach(k => {
+      if(d['sc_'+k]) {
+        SC[k] = d['sc_'+k];
+        const c = document.getElementById('sg_'+k);
+        if(c) c.querySelectorAll('.scb').forEach(b => { if(parseInt(b.textContent)===d['sc_'+k]) b.classList.add('sel'); });
+      }
+    });
+    // scale q8
+    if(d.sc_q8) {
+      SC.q8 = d.sc_q8;
+      document.querySelectorAll('#sg_q8 .scb').forEach(b => { if(b.textContent===d.sc_q8+'%'||parseInt(b.textContent)===d.sc_q8) b.classList.add('sel'); });
+    }
+    // checkboxes q34, q36, q37
+    ['q9','q34','q37'].forEach(name => {
+      const key = name+'_checks';
+      if(d[key]) {
+        const vals = d[key].split(', ');
+        document.querySelectorAll('input[name="'+name+'"]').forEach(cb => { if(vals.includes(cb.value)) cb.checked = true; });
+      }
+    });
+    // insumos q16a/b/c
+    ['q16a','q16b','q16c'].forEach(id => { if(d[id]){ const el=document.getElementById(id); if(el) el.value=d[id]; }});
+    curB = d._b || 0;
+    return true;
+  } catch(e) { return false; }
+}
+
+function restoreRadio(key, val) {
+  RD[key] = val;
+  document.querySelectorAll('[name="'+key+'"]').forEach(inp => {
+    const ro = inp.closest('.ro');
+    if(!ro) return;
+    const onclick = ro.getAttribute('onclick') || '';
+    if(onclick.includes("'"+val+"'") || onclick.includes('"'+val+'"')) {
+      ro.classList.add('sel'); inp.checked = true;
+    }
+  });
+}
+
+// ─── FINALIZAR ───────────────────────────────────────────
+function finalizar() {
+  const d = collect();
+  try { localStorage.setItem(SK, JSON.stringify(d)); } catch(e) {}
+  document.getElementById('form-wrap').style.display = 'none';
+  document.getElementById('done-screen').style.display = 'flex';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function enviarWA() {
+  const text = buildText(collect());
+  const url = 'https://wa.me/' + COACH_WA + '?text=' + encodeURIComponent(text);
+  window.open(url, '_blank');
+}
+function copiar() {
+  const text = buildText(collect());
+  navigator.clipboard.writeText(text)
+    .then(()=>alert('✓ Respuestas copiadas. Pegálas en un mail a tu coach.'))
+    .catch(()=>{ const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('✓ Copiado.'); });
+}
+function volverEditar() {
+  document.getElementById('done-screen').style.display = 'none';
+  document.getElementById('form-wrap').style.display = 'block';
+  goB(curB);
+}
+
+
+// ── MODO TEST: Ctrl+Shift+T salta al done-screen ──────────
+document.addEventListener('keydown', function(e) {
+  if(e.ctrlKey && e.shiftKey && e.key === 'T') {
+    document.querySelectorAll('#cover, #form-wrap').forEach(el => el.style.display='none');
+    document.getElementById('done-screen').style.display = 'flex';
+  }
+});
+
+// ─── INIT ─────────────────────────────────────────────────
+const hadSaved = loadSaved();
+if(hadSaved && v('c_nombre')) {
+  const banner = document.createElement('div');
+  banner.className = 'resume-banner';
+  const p = document.createElement('p');
+  p.innerHTML = '📌 Tenés respuestas guardadas — <strong>¿continuás donde dejaste?</strong>';
+  p.style.cssText = 'font-size:.8125rem;color:var(--p2)';
+  const btnContinuar = document.createElement('button');
+  btnContinuar.textContent = 'Continuar';
+  btnContinuar.style.cssText = 'padding:6px 16px;background:var(--p2);color:white;border:none;border-radius:7px;font-family:sans-serif;font-size:.75rem;font-weight:500;cursor:pointer';
+  btnContinuar.onclick = function() { resumeForm(banner); };
+  const btnNuevo = document.createElement('button');
+  btnNuevo.textContent = 'Empezar de nuevo';
+  btnNuevo.style.cssText = 'padding:6px 10px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:7px;font-family:sans-serif;font-size:.75rem;cursor:pointer';
+  btnNuevo.onclick = function() { banner.remove(); };
+  banner.appendChild(p); banner.appendChild(btnContinuar); banner.appendChild(btnNuevo);
+  document.body.appendChild(banner);
+}
+
+function resumeForm(bannerEl) {
+  if(bannerEl && bannerEl.remove) bannerEl.remove();
+  else { const b=document.querySelector('.resume-banner'); if(b) b.remove(); }
+  document.getElementById('cover').style.display = 'none';
+  document.getElementById('form-wrap').style.display = 'block';
+  document.getElementById('hdr-name').textContent = v('c_nombre') + (v('c_oficina') ? ' · '+v('c_oficina') : '');
+  goB(curB);
+}
+</script>
+</body>
+</html>
