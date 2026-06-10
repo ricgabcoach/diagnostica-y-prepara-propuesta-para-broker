@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diseña Propuesta para Broker · Ricardo Gabisson</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a1a;--muted:#6b6b6b;--faint:#bbb;
+  --bg:#f8f6f2;--white:#fff;--border:#e2ddd7;
+  --p1:#1a3a5c;--p1l:#e8f0f8;
+  --p2:#0d5c3a;--p2l:#e5f4ec;
+  --p3:#7a3d00;--p3l:#fef2e4;--p3b:#c49b6b;
+  --p4:#8b1a1a;--p4l:#fdeaea;
+  --accent:#c8a96e;--ok:#2e7d32;--r:10px
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+
+/* LOCK */
+#lock{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;background:var(--ink)}
+.lock-box{background:var(--white);border-radius:16px;padding:2rem;max-width:300px;width:100%;text-align:center}
+.lock-logo{font-size:30px;margin-bottom:.5rem}
+.lock-title{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;margin-bottom:3px}
+.lock-sub{font-size:11px;color:var(--muted);margin-bottom:1.125rem}
+.lock-box input{width:100%;border:1px solid var(--border);border-radius:8px;padding:10px;font-size:15px;font-family:'DM Sans',sans-serif;text-align:center;letter-spacing:.15em;background:var(--bg);margin-bottom:.625rem}
+.lock-box input:focus{outline:none;border-color:#999}
+.lock-btn{width:100%;padding:10px;background:var(--ink);color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer}
+.lock-err{display:none;font-size:11px;color:#c00;margin-top:.5rem}
+
+/* LOBBY */
+#lobby{display:none;min-height:100vh}
+.lobby-hdr{background:var(--ink);padding:.875rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.lobby-brand{display:flex;align-items:center;gap:.625rem}
+.lobby-mk{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.lobby-title{font-family:'DM Serif Display',serif;font-size:15px;color:white}
+.lobby-sub{font-size:9px;color:rgba(255,255,255,.45)}
+.hdr-btn{padding:4px 10px;border:1px solid rgba(255,255,255,.2);border-radius:5px;background:transparent;color:rgba(255,255,255,.65);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer}
+.hdr-btn:hover{background:rgba(255,255,255,.1);color:white}
+.lobby-main{max-width:900px;margin:0 auto;padding:1.5rem}
+.lobby-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.125rem;flex-wrap:wrap;gap:.625rem}
+.lobby-top h2{font-family:'DM Serif Display',serif;font-size:21px;font-weight:400}
+.new-form{display:flex;gap:5px}
+.new-form input{border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-family:'DM Sans',sans-serif;font-size:12px;background:var(--white);color:var(--ink);width:200px}
+.new-form input:focus{outline:none;border-color:#999}
+.offices-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.75rem}
+.office-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:1rem;cursor:pointer;transition:all .15s;position:relative}
+.office-card:hover{border-color:#aaa;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.oc-name{font-size:13px;font-weight:600;margin-bottom:2px;padding-right:22px}
+.oc-meta{font-size:10px;color:var(--muted);margin-bottom:.625rem}
+.oc-chips{display:flex;gap:3px;flex-wrap:wrap}
+.oc-chip{padding:2px 7px;border-radius:20px;font-size:9px;font-weight:600;border:1px solid var(--border);color:var(--faint)}
+.oc-chip.ok{border-color:var(--ink);color:var(--ink)}
+.oc-chip.c2{border-color:var(--p1);color:var(--p1);background:var(--p1l)}
+.oc-chip.c3{border-color:var(--p3);color:var(--p3);background:var(--p3l)}
+.oc-chip.c5{border-color:var(--p2);color:var(--p2);background:var(--p2l)}
+.oc-chip.c6{border-color:var(--p4);color:var(--p4);background:var(--p4l)}
+.oc-del{position:absolute;top:.625rem;right:.625rem;width:20px;height:20px;border:1px solid var(--border);border-radius:4px;background:transparent;cursor:pointer;font-size:10px;color:var(--faint);display:flex;align-items:center;justify-content:center}
+.oc-del:hover{border-color:#c00;color:#c00;background:#fdeaea}
+.empty{text-align:center;padding:3rem;color:var(--muted);grid-column:1/-1;font-size:13px}
+
+/* FICHA */
+#ficha{display:none}
+.ficha-hdr{background:var(--white);border-bottom:1px solid var(--border);padding:0 1.25rem;position:sticky;top:0;z-index:100}
+.ficha-hdr-in{max-width:980px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:50px;gap:.75rem}
+.ficha-left{display:flex;align-items:center;gap:.625rem}
+.back-btn{display:flex;align-items:center;gap:4px;padding:4px 9px;border:1px solid var(--border);border-radius:5px;background:transparent;cursor:pointer;font-size:11px;color:var(--muted);font-family:'DM Sans',sans-serif}
+.back-btn:hover{border-color:#999;color:var(--ink)}
+.ficha-name{font-family:'DM Serif Display',serif;font-size:14px}
+.ficha-broker{font-size:10px;color:var(--muted)}
+.ftabs{display:flex;background:var(--bg);border-radius:7px;padding:2px;border:1px solid var(--border);overflow-x:auto}
+.ftb{padding:4px 10px;border:none;cursor:pointer;border-radius:5px;font-size:10px;font-weight:500;font-family:'DM Sans',sans-serif;color:var(--muted);background:transparent;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:3px;flex-shrink:0}
+.ftb.on{background:var(--white);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.ftb.saved{border-bottom:2px solid var(--ok)}
+.ftb.saved .ftb-saved-dot{display:inline-block}
+.ftb-saved-dot{display:none;width:6px;height:6px;border-radius:50%;background:var(--ok);margin-left:3px;flex-shrink:0}
+.ftb-dot{width:5px;height:5px;border-radius:50%}
+.sstrip{background:var(--bg);border-bottom:1px solid var(--border);padding:3px 1.25rem}
+.sstrip-in{max-width:980px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.save-ind{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--faint)}
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--faint)}
+.sdot.ok{background:var(--ok)}.sdot.pulse{background:var(--accent);animation:pl .5s infinite alternate}
+@keyframes pl{to{opacity:.3}}
+.sml-btn{padding:2px 7px;border:1px solid var(--border);border-radius:4px;background:var(--white);font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--muted)}
+.sml-btn:hover{border-color:#999;color:var(--ink)}
+.ficha-main{max-width:980px;margin:0 auto;padding:1.125rem}
+.fpanel{display:none}.fpanel.on{display:block}
+
+/* CARDS & FORMS */
+.card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:1.125rem;margin-bottom:.75rem}
+.card-t{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.75rem}
+.ib{background:#fffdf5;border:1px solid #e8d9b0;border-radius:8px;padding:.75rem 1rem;margin-bottom:.875rem;display:flex;gap:7px}
+.ib p{font-size:12px;color:#5a4a2a;line-height:1.6}
+textarea,input[type=text]{width:100%;border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:12px;background:var(--bg);color:var(--ink);transition:border-color .15s;resize:vertical}
+textarea:focus,input[type=text]:focus{outline:none;border-color:#aaa;background:var(--white)}
+textarea{min-height:64px}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;border:1px solid;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s}
+.btn-p{background:var(--ink);color:white;border-color:var(--ink)}.btn-p:hover{background:#2e2e2e}
+.btn-s{background:white;color:var(--ink);border-color:var(--border)}.btn-s:hover{border-color:#999}
+.btn-ok{background:var(--ok);color:white;border-color:var(--ok)}.btn-ok:hover{background:#1b5e20}
+.btn-row{display:flex;gap:6px;margin-top:.875rem;flex-wrap:wrap}
+
+/* STATUS BANNER */
+.res-loaded{background:var(--p2l);border:1px solid #a8d4bc;border-radius:8px;padding:.75rem .875rem;margin-bottom:.875rem;display:flex;align-items:center;justify-content:space-between;gap:.625rem;flex-wrap:wrap}
+.res-loaded h4{font-size:13px;font-weight:600;margin-bottom:1px;color:var(--p2)}
+.res-loaded p{font-size:11px;color:var(--p2)}
+
+/* DUAL MODE SECTION (IA + paste) */
+.dual-mode{display:flex;flex-direction:column;gap:.75rem;margin-bottom:.875rem}
+.mode-card{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:1rem}
+.mode-card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;display:flex;align-items:center;gap:6px}
+.mode-badge{padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700}
+.badge-ia{background:#e8f0f8;color:var(--p1)}
+.badge-manual{background:#f5f0e8;color:#7a5500}
+
+/* DIAGNOSIS DISPLAY */
+.spin{width:26px;height:26px;border:2px solid var(--border);border-top-color:var(--ink);border-radius:50%;animation:sp .7s linear infinite;margin:0 auto .5rem}
+@keyframes sp{to{transform:rotate(360deg)}}
+.dloading{text-align:center;padding:1.75rem}
+.diag-out{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:1.25rem;font-size:13px;line-height:1.8}
+.dsec{margin-bottom:1.125rem;padding-bottom:1.125rem;border-bottom:1px solid var(--border)}
+.dsec:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.dsec h3{font-family:'DM Serif Display',serif;font-size:16px;font-weight:400;margin-bottom:.5rem}
+.fc{border-radius:6px;padding:.5rem .875rem;margin-bottom:.4rem;border-left:3px solid}
+.fc-s{background:#fef3e6;border-color:var(--p3)}.fc-l{background:var(--p1l);border-color:var(--p1)}
+.fc-m{background:#f5eef8;border-color:#7b3fa0}.fc-h{background:#edf8ee;border-color:#2e7d32}
+.fc-p{background:var(--p3l);border-color:#a05000}.fc-r{background:var(--p4l);border-color:var(--p4)}
+.fl2{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px;opacity:.6}
+.ft{font-size:12px;line-height:1.55}
+.score4{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:1rem}
+.pscore{border-radius:7px;padding:.5rem;text-align:center}
+.pscore-n{font-family:'DM Serif Display',serif;font-size:24px}
+.pscore-l{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-top:1px;opacity:.75}
+.sc-p1{background:var(--p1l);color:var(--p1)}.sc-p2{background:var(--p2l);color:var(--p2)}
+.sc-p3{background:var(--p3l);color:var(--p3)}.sc-p4{background:var(--p4l);color:var(--p4)}
+
+/* PLAN VISUAL */
+.pv-filters{display:flex;gap:4px;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+.pv-filters span{font-size:11px;color:var(--muted);margin-right:3px}
+.pvf-btn{padding:4px 11px;border-radius:20px;border:1px solid var(--border);background:var(--white);font-size:10px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;color:var(--muted);transition:all .15s}
+.pvf-btn.on{font-weight:700}
+.pvf-btn.all.on{background:var(--ink);color:white;border-color:var(--ink)}
+.pvf-btn.p1f.on{background:var(--p1l);color:var(--p1);border-color:var(--p1)}
+.pvf-btn.p2f.on{background:var(--p2l);color:var(--p2);border-color:var(--p2)}
+.pvf-btn.p3f.on{background:var(--p3l);color:var(--p3);border-color:var(--p3)}
+.pvf-btn.p4f.on{background:var(--p4l);color:var(--p4);border-color:var(--p4)}
+.pv-month{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:1rem 0 .5rem;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.pv-month:first-child{margin-top:0}
+.pv-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.pv-card{background:var(--white);border-radius:9px;border:1px solid var(--border);padding:.875rem;cursor:pointer;transition:all .15s}
+.pv-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.pv-card.open{border-width:1.5px}
+.pv-card.p1.open{border-color:var(--p1)}.pv-card.p2.open{border-color:var(--p2)}
+.pv-card.p3.open{border-color:var(--p3)}.pv-card.p4.open{border-color:var(--p4)}
+.pv-hdr{display:flex;align-items:flex-start;gap:7px}
+.pv-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.pv-card.p1 .pv-num{background:var(--p1l);color:var(--p1)}.pv-card.p2 .pv-num{background:var(--p2l);color:var(--p2)}
+.pv-card.p3 .pv-num{background:var(--p3l);color:var(--p3)}.pv-card.p4 .pv-num{background:var(--p4l);color:var(--p4)}
+.pv-plbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1px}
+.pv-card.p1 .pv-plbl{color:var(--p1)}.pv-card.p2 .pv-plbl{color:var(--p2)}
+.pv-card.p3 .pv-plbl{color:var(--p3)}.pv-card.p4 .pv-plbl{color:var(--p4)}
+.pv-title{font-size:12px;font-weight:600;line-height:1.3}
+.pv-sub{font-size:10px;color:var(--muted);margin-top:1px}
+.pv-detail{display:none;margin-top:.625rem;padding-top:.625rem;border-top:1px solid var(--border)}
+.pv-card.open .pv-detail{display:block}
+.pv-dlabel{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);margin-bottom:2px;margin-top:.5rem}
+.pv-dlabel:first-child{margin-top:0}
+.pv-dlist{list-style:none}
+.pv-dlist li{font-size:11px;color:var(--muted);padding:1px 0;display:flex;gap:4px;line-height:1.4}
+.pv-dlist li::before{content:"·";color:var(--faint)}
+
+/* PESTAÑA 5 — DIAGNÓSTICO PARA EL BROKER */
+.doc-preview{background:var(--white);border-radius:var(--r);border:1px solid var(--border);overflow:hidden}
+.doc-header{background:var(--ink);padding:1.5rem 1.75rem;color:white}
+.doc-header h1{font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;margin-bottom:3px}
+.doc-header p{font-size:11px;opacity:.6}
+.doc-body{padding:1.5rem 1.75rem}
+.doc-section{margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.doc-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.doc-section h2{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;margin-bottom:.75rem;color:var(--ink)}
+.doc-section p{font-size:13px;line-height:1.8;color:#333}
+.radar-wrap{display:flex;justify-content:center;margin:.75rem 0}
+.bar-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem}
+.bar-label{font-size:11px;font-weight:600;width:80px;flex-shrink:0}
+.bar-track{flex:1;height:10px;background:var(--border);border-radius:5px;overflow:hidden}
+.bar-fill{height:100%;border-radius:5px;transition:width .6s}
+.bar-val{font-size:11px;font-weight:600;width:30px;text-align:right;flex-shrink:0}
+.doc-highlight{background:var(--p1l);border-left:3px solid var(--p1);border-radius:0 7px 7px 0;padding:.75rem 1rem;margin:.75rem 0;font-size:13px;font-style:italic;color:var(--p1)}
+
+/* PESTAÑA 6 — PROPUESTA COMERCIAL */
+.prop-doc{background:var(--white);border-radius:var(--r);border:1px solid var(--border);overflow:hidden}
+.prop-hdr{background:linear-gradient(135deg,var(--ink) 0%,#2a4a6c 100%);padding:2rem 1.75rem;color:white;text-align:center}
+.prop-hdr h1{font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;margin-bottom:4px}
+.prop-hdr p{font-size:11px;opacity:.55}
+.prop-body{padding:1.5rem 1.75rem}
+.prop-section{margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.prop-section:last-child{border-bottom:none}
+.prop-section h2{font-family:'DM Serif Display',serif;font-size:16px;font-weight:400;margin-bottom:.625rem}
+.mes-row{display:flex;gap:.625rem;margin-bottom:.5rem}
+.mes-badge{flex-shrink:0;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;background:var(--bg);border:1px solid var(--border);color:var(--muted)}
+.mes-content{font-size:12px;line-height:1.6;color:#333}
+.inversion-box{background:var(--ink);color:white;border-radius:10px;padding:1.25rem 1.5rem;text-align:center;margin:.75rem 0}
+.inversion-box .monto{font-family:'DM Serif Display',serif;font-size:36px}
+.inversion-box .desc{font-size:11px;opacity:.6;margin-top:3px}
+.incluye-item{display:flex;align-items:flex-start;gap:8px;padding:.375rem 0;font-size:12px;line-height:1.5}
+.incluye-item::before{content:"✓";color:var(--ok);font-weight:700;flex-shrink:0;margin-top:1px}
+.pasos-item{display:flex;align-items:flex-start;gap:.625rem;padding:.375rem 0}
+.paso-num{width:20px;height:20px;border-radius:50%;background:var(--ink);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.paso-txt{font-size:12px;line-height:1.5}
+.prop-footer{background:var(--bg);padding:1rem 1.75rem;text-align:center;font-size:10px;color:var(--muted);border-top:1px solid var(--border)}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal-box{background:var(--white);border-radius:14px;padding:1.5rem;max-width:480px;width:100%;max-height:85vh;overflow-y:auto}
+.modal-box h3{font-family:'DM Serif Display',serif;font-size:17px;font-weight:400;margin-bottom:.375rem}
+.modal-box p{font-size:12px;color:var(--muted);margin-bottom:.75rem;line-height:1.5}
+.modal-box textarea{min-height:140px;font-size:12px}
+
+/* STATUS CHECK */
+.st-item{display:flex;align-items:center;justify-content:space-between;gap:.625rem;padding:.3rem 0;border-bottom:1px solid var(--border)}
+.st-item:last-child{border-bottom:none}
+.st-dot2{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+@media print{.ficha-hdr,.sstrip,.btn-row,.no-print,.ftabs,.back-btn{display:none!important}body{background:white}.diag-out,.doc-preview,.prop-doc{border:none}}
+@media(max-width:600px){.pv-grid{grid-template-columns:1fr}.score4{grid-template-columns:1fr 1fr}.ftb{padding:4px 7px;font-size:9px}}
+</style>
+</head>
+<body>
+
+<!-- LOCK -->
+<div id="lock">
+  <div class="lock-box">
+    <div class="lock-logo">🏢</div>
+    <div class="lock-title">Panel del Coach</div>
+    <div class="lock-sub">Ricardo Gabisson · Coaching Inmobiliario</div>
+    <input type="password" id="pwd" placeholder="Clave de acceso" onkeydown="if(event.key==='Enter')chkPwd()">
+    <button class="lock-btn" onclick="chkPwd()">Acceder →</button>
+    <div class="lock-err" id="lock-err">Clave incorrecta</div>
+  </div>
+</div>
+
+<!-- LOBBY -->
+<div id="lobby">
+  <header class="lobby-hdr">
+    <div class="lobby-brand">
+      <div class="lobby-mk">🏢</div>
+      <div><div class="lobby-title">Panel del Coach</div><div class="lobby-sub">Ricardo Gabisson · Coaching Inmobiliario</div></div>
+    </div>
+    <div style="display:flex;gap:5px">
+      <button class="hdr-btn" onclick="exportAll()">⬇ Exportar</button>
+      <button class="hdr-btn" onclick="openImportAll()">⬆ Importar</button>
+    </div>
+  </header>
+  <div class="lobby-main">
+    <div class="lobby-top">
+      <h2>Mis oficinas</h2>
+      <div class="new-form">
+        <input type="text" id="new-name" placeholder="Nueva oficina..." maxlength="60" onkeydown="if(event.key==='Enter')createOffice()">
+        <button class="btn btn-p" onclick="createOffice()">+ Nueva</button>
+      </div>
+    </div>
+    <div class="offices-grid" id="offices-grid"></div>
+  </div>
+</div>
+
+<!-- FICHA -->
+<div id="ficha">
+  <header class="ficha-hdr">
+    <div class="ficha-hdr-in">
+      <div class="ficha-left">
+        <button class="back-btn" onclick="backToLobby()">← Oficinas</button>
+        <div><div class="ficha-name" id="f-name">—</div><div class="ficha-broker" id="f-broker">—</div></div>
+      </div>
+      <div class="ftabs">
+        <button class="ftb on" id="tab-fp1" onclick="showFP('fp1',this)"><span class="ftb-dot" style="background:var(--p2)"></span>Respuestas<span class="ftb-saved-dot"></span></button>
+        <button class="ftb" id="tab-fp2" onclick="showFP('fp2',this)"><span class="ftb-dot" style="background:var(--p1)"></span>Diagnóstico<span class="ftb-saved-dot"></span></button>
+        <button class="ftb" id="tab-fp3" onclick="showFP('fp3',this)"><span class="ftb-dot" style="background:var(--p3)"></span>Plan de acción<span class="ftb-saved-dot"></span></button>
+        <button class="ftb" id="tab-fp4" onclick="showFP('fp4',this)"><span class="ftb-dot" style="background:var(--accent)"></span>Plan visual<span class="ftb-saved-dot"></span></button>
+        <button class="ftb" id="tab-fp5" onclick="showFP('fp5',this)"><span class="ftb-dot" style="background:var(--p2)"></span>Para el broker<span class="ftb-saved-dot"></span></button>
+        <button class="ftb" id="tab-fp6" onclick="showFP('fp6',this)"><span class="ftb-dot" style="background:var(--p4)"></span>Propuesta<span class="ftb-saved-dot"></span></button>
+      </div>
+    </div>
+  </header>
+  <div class="sstrip">
+    <div class="sstrip-in">
+      <div class="save-ind"><div class="sdot" id="sdot"></div><span id="stxt">—</span></div>
+      <button class="sml-btn" onclick="exportOffice()">⬇ Exportar ficha</button>
+    </div>
+  </div>
+
+  <div class="ficha-main">
+
+    <!-- TAB 1: RESPUESTAS -->
+    <div id="fp1" class="fpanel on">
+      <div id="resp-loaded-banner" style="display:none" class="res-loaded">
+        <div><h4>Respuestas del broker cargadas ✓</h4><p id="resp-date">—</p></div>
+        <button class="btn btn-s" style="font-size:11px" onclick="showPaste()">Recargar</button>
+      </div>
+      <div id="resp-paste-section">
+        <div class="ib"><p>📋 <strong>¿Cómo cargar las respuestas?</strong> El broker completa el cuestionario y te manda el texto por WhatsApp. Copiás ese texto completo y lo pegás acá abajo. Queda guardado en la ficha.</p></div>
+        <div class="card">
+          <div class="card-t">Pegar texto del WhatsApp del broker</div>
+          <textarea id="broker-raw" style="min-height:180px" placeholder="Pegá aquí el texto completo que te envió el broker por WhatsApp..."></textarea>
+          <div class="btn-row">
+            <button class="btn btn-ok" onclick="saveRespuestas()">✓ Guardar respuestas</button>
+            <button class="btn btn-s" onclick="clearRespuestas()">Borrar</button>
+          </div>
+        </div>
+      </div>
+      <div id="resp-view" style="display:none;margin-top:.75rem">
+        <div class="card-t">Vista de respuestas guardadas</div>
+        <div id="resp-parsed"></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: DIAGNÓSTICO INTERNO -->
+    <div id="fp2" class="fpanel">
+      <div id="diag2-done-banner" style="display:none" class="res-loaded" style="background:var(--p1l);border-color:#b8cfe0">
+        <div><h4 style="color:var(--p1)">Diagnóstico guardado ✓</h4><p style="color:var(--p1)" id="diag2-date">—</p></div>
+        <div style="display:flex;gap:.375rem">
+          <button class="btn btn-s" style="font-size:11px" onclick="showDiag2()">Ver</button>
+          <button class="btn btn-s" style="font-size:11px;color:#c00;border-color:#f0b0b0" onclick="clearDiag2()">Borrar</button>
+        </div>
+      </div>
+
+      <div id="diag2-gen-section">
+        <div class="dual-mode">
+          <div class="mode-card">
+            <div class="mode-card-title"><span class="mode-badge badge-ia">IA</span> Generar automáticamente</div>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:.625rem;line-height:1.5">La IA analiza las respuestas del broker y genera el diagnóstico completo: foto del sistema, hallazgos por dimensión, las 3 raíces y frase diagnóstica.</p>
+            <textarea id="ctx-diag" style="min-height:48px;margin-bottom:.5rem" placeholder="Contexto adicional del coach (opcional): lo que observaste en la reunión, impresiones, datos extra..."></textarea>
+            <button class="btn btn-p" onclick="genDiag2()">⚡ Generar diagnóstico</button>
+          </div>
+          <div class="mode-card" style="border-color:#e8d9b0">
+            <div class="mode-card-title"><span class="mode-badge badge-manual">Manual</span> Pegar diagnóstico</div>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:.5rem;line-height:1.5">Si generaste el diagnóstico en el proyecto de Claude, copiá el resultado completo y pegalo acá.</p>
+            <textarea id="diag2-manual" style="min-height:120px" placeholder="Pegá aquí el diagnóstico generado en Claude..."></textarea>
+            <div class="btn-row">
+              <button class="btn btn-ok" onclick="saveDiag2Manual()">✓ Guardar diagnóstico</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="diag2-loading" style="display:none" class="dloading">
+        <div class="spin"></div>
+        <p style="color:var(--muted);font-size:12px">Analizando las respuestas del broker...</p>
+        <p style="color:var(--faint);font-size:10px;margin-top:2px" id="diag2-step"></p>
+      </div>
+
+      <div id="diag2-output-wrap" style="display:none">
+        <div class="diag-out" id="diag2-output"></div>
+        <div class="btn-row no-print">
+          <button class="btn btn-s" onclick="window.print()">🖨️ Imprimir</button>
+          <button class="btn btn-s" onclick="copyText('diag2-output')">📋 Copiar</button>
+          <button class="btn btn-ok" onclick="saveDiag2()">💾 Guardar</button>
+          <button class="btn btn-s" onclick="resetDiag2()">↺ Regenerar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PLAN DE ACCIÓN -->
+    <div id="fp3" class="fpanel">
+      <div id="plan3-done-banner" style="display:none" class="res-loaded" style="background:var(--p3l);border-color:var(--p3b)">
+        <div><h4 style="color:var(--p3)">Plan de acción guardado ✓</h4><p style="color:var(--p3)" id="plan3-date">—</p></div>
+        <div style="display:flex;gap:.375rem">
+          <button class="btn btn-s" style="font-size:11px" onclick="showPlan3()">Ver</button>
+          <button class="btn btn-s" style="font-size:11px;color:#c00;border-color:#f0b0b0" onclick="clearPlan3()">Borrar</button>
+        </div>
+      </div>
+
+      <div id="plan3-gen-section">
+        <div class="dual-mode">
+          <div class="mode-card">
+            <div class="mode-card-title"><span class="mode-badge badge-ia">IA</span> Generar automáticamente</div>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:.5rem;line-height:1.5">La IA toma el diagnóstico guardado y genera el plan de acción personalizado de 12 sesiones en 3 meses.</p>
+            <button class="btn btn-p" onclick="genPlan3()">⚡ Generar plan de acción</button>
+          </div>
+          <div class="mode-card" style="border-color:#e8d9b0">
+            <div class="mode-card-title"><span class="mode-badge badge-manual">Manual</span> Pegar plan</div>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:.5rem;line-height:1.5">Si generaste el plan en el proyecto de Claude, pegalo acá.</p>
+            <textarea id="plan3-manual" style="min-height:120px" placeholder="Pegá aquí el plan de acción..."></textarea>
+            <div class="btn-row">
+              <button class="btn btn-ok" onclick="savePlan3Manual()">✓ Guardar plan</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="plan3-loading" style="display:none" class="dloading">
+        <div class="spin"></div>
+        <p style="color:var(--muted);font-size:12px">Generando plan de acción personalizado...</p>
+      </div>
+
+      <div id="plan3-output-wrap" style="display:none">
+        <div class="card-t" style="margin-bottom:.5rem">Plan de acción — editable</div>
+        <textarea id="plan3-editor" style="min-height:320px;font-size:12px;line-height:1.8"></textarea>
+        <div class="card" style="margin-top:.75rem;border-color:#e8d9b0">
+          <div class="card-t" style="color:var(--accent)">Refinar con IA</div>
+          <div style="display:flex;gap:.5rem">
+            <input type="text" id="refine-prompt" placeholder="Ej: Agregá más detalle en las sesiones grupales / Enfocate más en el mindset del broker...">
+            <button class="btn btn-p" style="white-space:nowrap" onclick="refinarPlan()">↻ Refinar</button>
+          </div>
+        </div>
+        <div class="btn-row no-print">
+          <button class="btn btn-s" onclick="copyText('plan3-editor')">📋 Copiar</button>
+          <button class="btn btn-ok" onclick="savePlan3()">💾 Guardar</button>
+          <button class="btn btn-s" onclick="resetPlan3()">↺ Regenerar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: PLAN VISUAL -->
+    <div id="fp4" class="fpanel">
+      <div id="pv-empty" style="display:none">
+        <div class="card" style="text-align:center;padding:2rem">
+          <div style="font-size:30px;margin-bottom:.5rem">📋</div>
+          <p style="font-size:13px;color:var(--muted)">Primero generá el plan de acción en la pestaña anterior.</p>
+          <button class="btn btn-s" style="margin-top:.75rem" onclick="showFP('fp3',document.querySelectorAll('.ftb')[2])">→ Ir al plan</button>
+        </div>
+      </div>
+      <div id="pv-gen-section" style="display:none">
+        <div class="card">
+          <div class="card-t">Generar plan visual</div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:.625rem">La IA convierte el plan de acción en tarjetas interactivas organizadas por mes y por P.</p>
+          <button class="btn btn-p" onclick="genPV()">✦ Convertir en tarjetas visuales</button>
+        </div>
+      </div>
+      <div id="pv-loading" style="display:none" class="dloading"><div class="spin"></div><p style="font-size:12px;color:var(--muted)">Convirtiendo plan en tarjetas...</p></div>
+      <div id="pv-content" style="display:none">
+        <div class="pv-filters">
+          <span>Filtrar:</span>
+          <button class="pvf-btn all on" onclick="pvFilter('all',this)">Todas</button>
+          <button class="pvf-btn p1f" onclick="pvFilter('p1',this)">P1 · Broker</button>
+          <button class="pvf-btn p2f" onclick="pvFilter('p2',this)">P2 · Equipo</button>
+          <button class="pvf-btn p3f" onclick="pvFilter('p3',this)">P3 · Procesos</button>
+          <button class="pvf-btn p4f" onclick="pvFilter('p4',this)">P4 · Performance</button>
+        </div>
+        <div id="pv-cards"></div>
+        <div class="btn-row no-print">
+          <button class="btn btn-s" onclick="window.print()">🖨️ Imprimir</button>
+          <button class="btn btn-s" onclick="pvRegen()">↺ Regenerar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: DIAGNÓSTICO PARA EL BROKER -->
+    <div id="fp5" class="fpanel">
+      <div id="doc5-gen-section">
+        <div class="card">
+          <div class="card-t">Generar diagnóstico para el broker</div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:.625rem;line-height:1.5">Toma el diagnóstico interno y genera un documento visual en lenguaje accesible para presentarle al broker. Sin jerga técnica. Con gráficos de las 4P.</p>
+          <button class="btn btn-p" onclick="genDoc5()">✦ Generar diagnóstico para el broker</button>
+        </div>
+      </div>
+      <div id="doc5-loading" style="display:none" class="dloading"><div class="spin"></div><p style="font-size:12px;color:var(--muted)">Generando documento para el broker...</p></div>
+      <div id="doc5-output-wrap" style="display:none">
+        <div id="doc5-output"></div>
+        <div class="btn-row no-print">
+          <button class="btn btn-s" onclick="window.print()">🖨️ Imprimir / PDF</button>
+          <button class="btn btn-s" onclick="toggleEditDoc5()" id="edit-doc5-btn">✏️ Editar texto</button>
+          <button class="btn btn-ok" onclick="saveDoc5()">💾 Guardar</button>
+          <button class="btn btn-s" onclick="resetDoc5()">↺ Regenerar</button>
+        </div>
+        <div id="doc5-editor-wrap" style="display:none;margin-top:.75rem">
+          <div class="card" style="border-color:#e8d9b0">
+            <div class="card-t" style="color:var(--accent)">Editar contenido del documento</div>
+            <textarea id="doc5-raw-editor" style="min-height:300px;font-size:12px;line-height:1.7" placeholder="Editá el texto del diagnóstico..."></textarea>
+            <div class="btn-row">
+              <button class="btn btn-p" onclick="applyDoc5Edit()">Aplicar cambios</button>
+              <button class="btn btn-s" onclick="toggleEditDoc5()">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: PROPUESTA COMERCIAL -->
+    <div id="fp6" class="fpanel">
+      <div id="prop-gen-section">
+        <div class="card">
+          <div class="card-t">Generar propuesta comercial</div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:.875rem;line-height:1.5">Genera el documento de cierre comercial con diagnóstico resumido, plan por mes y presupuesto. Lo que el broker recibe para decidir si contratarte.</p>
+          <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.625rem">
+            <label style="font-size:12px;font-weight:500;white-space:nowrap">Inversión total:</label>
+            <input type="text" id="precio-input" placeholder="Ej: USD 1.800 / $ 450.000" style="max-width:200px">
+          </div>
+          <div style="display:flex;gap:.5rem;align-items:center;margin-bottom:.875rem">
+            <label style="font-size:12px;font-weight:500;white-space:nowrap">Modalidad:</label>
+            <input type="text" id="modalidad-input" placeholder="Ej: 12 sesiones en 3 meses, online" style="max-width:280px">
+          </div>
+          <button class="btn btn-p" onclick="genProp()">✦ Generar propuesta comercial</button>
+        </div>
+      </div>
+      <div id="prop-loading" style="display:none" class="dloading"><div class="spin"></div><p style="font-size:12px;color:var(--muted)">Generando propuesta comercial...</p></div>
+      <div id="prop-output-wrap" style="display:none">
+        <div id="prop-output"></div>
+        <div class="btn-row no-print">
+          <button class="btn btn-s" onclick="window.print()">🖨️ Imprimir / PDF</button>
+          <button class="btn btn-s" onclick="toggleEditProp()" id="edit-prop-btn">✏️ Editar texto</button>
+          <button class="btn btn-ok" onclick="saveProp()">💾 Guardar</button>
+          <button class="btn btn-s" onclick="resetProp()">↺ Regenerar</button>
+        </div>
+        <div id="prop-editor-wrap" style="display:none;margin-top:.75rem">
+          <div class="card" style="border-color:#e8d9b0">
+            <div class="card-t" style="color:var(--accent)">Editar propuesta</div>
+            <textarea id="prop-raw-editor" style="min-height:300px;font-size:12px;line-height:1.7" placeholder="Editá el texto de la propuesta..."></textarea>
+            <div class="btn-row">
+              <button class="btn btn-p" onclick="applyPropEdit()">Aplicar cambios</button>
+              <button class="btn btn-s" onclick="toggleEditProp()">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal-box">
+    <h3 id="m-title">—</h3>
+    <p id="m-sub">—</p>
+    <textarea id="m-input" placeholder="Pegá aquí..."></textarea>
+    <div style="display:flex;gap:.5rem;margin-top:.75rem">
+      <button class="btn btn-p" onclick="modalOk()">Cargar</button>
+      <button class="btn btn-s" onclick="closeModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────
+var APP_PWD = 'rg2025';
+var WORKER = 'https://green-haze-9bc4.ricgabisson.workers.dev/';
+var SK = 'coach_panel_v2';
+
+// ─── AUTH ─────────────────────────────────────────────────
+function unlockApp(){
+  document.getElementById('lock').style.display='none';
+  document.getElementById('lobby').style.display='block';
+  try{sessionStorage.setItem('rg_ok','1');}catch(e){}
+  renderLobby();
+}
+
+function chkPwd(){
+  var pwdEl=document.getElementById('pwd');
+  if(!pwdEl)return;
+  var val=pwdEl.value;
+  if(val===APP_PWD){
+    unlockApp();
+  } else {
+    var errEl=document.getElementById('lock-err');
+    if(errEl)errEl.style.display='block';
+    pwdEl.value='';
+    pwdEl.focus();
+  }
+}
+
+// ─── STORAGE ─────────────────────────────────────────────
+function getDB(){try{return JSON.parse(localStorage.getItem(SK))||{offs:{}};}catch(e){return{offs:{}};}}
+function putDB(d){try{localStorage.setItem(SK,JSON.stringify(d));}catch(e){}}
+function getOff(id){return getDB().offs[id]||null;}
+function putOff(id,data){var db=getDB();db.offs[id]=data;putDB(db);}
+function delOff(id){var db=getDB();delete db.offs[id];putDB(db);}
+function getAllOffs(){return getDB().offs||{};}
+
+// ─── LOBBY ───────────────────────────────────────────────
+function renderLobby(){
+  var offs=getAllOffs();
+  var keys=Object.keys(offs).sort(function(a,b){return (offs[b].upd||0)-(offs[a].upd||0);});
+  var grid=document.getElementById('offices-grid');
+  if(!keys.length){grid.innerHTML='<div class="empty">🏢<br>No tenés oficinas todavía.<br>Creá una para empezar.</div>';return;}
+  grid.innerHTML=keys.map(function(id){
+    var o=offs[id];
+    var fecha=o.upd?new Date(o.upd).toLocaleDateString('es-AR'):'—';
+    return '<div class="office-card" onclick="openOff(\''+id+'\')">'
+      +'<button class="oc-del" onclick="event.stopPropagation();delOffice(\''+id+'\')">✕</button>'
+      +'<div class="oc-name">'+o.label+'</div>'
+      +'<div class="oc-meta">'+(o.broker_name?'Broker: '+o.broker_name+' · ':'')+fecha+'</div>'
+      +'<div class="oc-chips">'
+      +'<div class="oc-chip '+(o.broker_raw?'ok':'')+'">Respuestas</div>'
+      +'<div class="oc-chip '+(o.diag2?'c2':'')+'">Diagnóstico</div>'
+      +'<div class="oc-chip '+(o.plan3?'c3':'')+'">Plan</div>'
+      +'<div class="oc-chip '+(o.doc5?'c5':'')+'">Para broker</div>'
+      +'<div class="oc-chip '+(o.prop?'c6':'')+'">Propuesta</div>'
+      +'</div></div>';
+  }).join('');
+}
+
+function createOffice(){
+  var name=document.getElementById('new-name').value.trim();
+  if(!name){document.getElementById('new-name').focus();return;}
+  var id='off_'+Date.now();
+  putOff(id,{label:name,upd:Date.now()});
+  document.getElementById('new-name').value='';
+  openOff(id);
+}
+
+function delOffice(id){
+  var o=getOff(id);
+  if(!o)return;
+  if(confirm('¿Eliminar "'+o.label+'"? No se puede deshacer.')){delOff(id);renderLobby();}
+}
+
+// ─── CURRENT OFFICE ──────────────────────────────────────
+var CID=null;
+
+function openOff(id){
+  CID=id;
+  var o=getOff(id);
+  if(!o)return;
+  document.getElementById('lobby').style.display='none';
+  document.getElementById('ficha').style.display='block';
+  document.getElementById('f-name').textContent=o.label;
+  document.getElementById('f-broker').textContent=o.broker_name?'Broker: '+o.broker_name:'Sin respuestas todavía';
+  showFP('fp1',document.querySelectorAll('.ftb')[0]);
+  loadRespPanel();
+  showSavedOk();
+  updateTabStatus();
+}
+
+function backToLobby(){
+  CID=null;
+  document.getElementById('ficha').style.display='none';
+  document.getElementById('lobby').style.display='block';
+  renderLobby();
+}
+
+function showSaving(){document.getElementById('sdot').className='sdot pulse';document.getElementById('stxt').textContent='Guardando...';}
+function showSavedOk(){document.getElementById('sdot').className='sdot ok';document.getElementById('stxt').textContent='Guardado '+new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});}
+function saveOff(){if(!CID)return;var o=getOff(CID)||{label:'',upd:Date.now()};o.upd=Date.now();putOff(CID,o);showSavedOk();}
+
+// ─── TAB STATUS DOTS ─────────────────────────────────────
+// FIX 1: Esta función estaba siendo llamada 8+ veces pero nunca fue definida.
+// Causaba ReferenceError cada vez que se abría una oficina o se guardaba algo.
+function updateTabStatus(){
+  if(!CID)return;
+  var o=getOff(CID)||{};
+  var tabs=[
+    {id:'tab-fp1',key:'broker_raw'},
+    {id:'tab-fp2',key:'diag2'},
+    {id:'tab-fp3',key:'plan3'},
+    {id:'tab-fp4',key:'pv_sessions'},
+    {id:'tab-fp5',key:'doc5'},
+    {id:'tab-fp6',key:'prop'}
+  ];
+  tabs.forEach(function(t){
+    var btn=document.getElementById(t.id);
+    if(!btn)return;
+    var hasContent=t.key==='pv_sessions'?(o[t.key]&&o[t.key].length>0):!!o[t.key];
+    if(hasContent){btn.classList.add('saved');}
+    else{btn.classList.remove('saved');}
+  });
+}
+
+// ─── TABS ─────────────────────────────────────────────────
+function showFP(id,btn){
+  document.querySelectorAll('.fpanel').forEach(function(p){p.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+  document.querySelectorAll('.ftb').forEach(function(b){b.classList.remove('on');});
+  if(btn)btn.classList.add('on');
+  if(id==='fp2')loadDiag2Panel();
+  if(id==='fp3')loadPlan3Panel();
+  if(id==='fp4')loadPVPanel();
+  if(id==='fp5')loadDoc5Panel();
+  if(id==='fp6')loadPropPanel();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─── HELPERS ─────────────────────────────────────────────
+var v=function(id){return(document.getElementById(id)||{value:''}).value.trim();};
+
+function copyText(id){
+  var el=document.getElementById(id);
+  var txt=el.tagName==='TEXTAREA'?el.value:el.innerText;
+  navigator.clipboard.writeText(txt).then(function(){alert('✓ Copiado');});
+}
+
+async function callWorker(system, prompt){
+  var res=await fetch(WORKER,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:16000,system:system,messages:[{role:'user',content:prompt}]})
+  });
+  var json=await res.json();
+  return (json.content||[]).map(function(c){return c.text||'';}).join('');
+}
+
+function extractSection(txt,title){
+  var re=new RegExp('##\\s*'+title+'[\\s\\S]*?(?=##|$)','i');
+  var m=txt.match(re);
+  return m?m[0].replace(new RegExp('##\\s*'+title,'i'),'').trim():'';
+}
+
+// ─── TAB 1: RESPUESTAS ───────────────────────────────────
+function loadRespPanel(){
+  var o=getOff(CID)||{};
+  if(o.broker_raw){
+    document.getElementById('resp-paste-section').style.display='none';
+    document.getElementById('resp-loaded-banner').style.display='flex';
+    document.getElementById('resp-date').textContent=o.broker_date||'';
+    document.getElementById('resp-view').style.display='block';
+    renderRespView(o.broker_raw);
+  } else {
+    document.getElementById('resp-paste-section').style.display='block';
+    document.getElementById('resp-loaded-banner').style.display='none';
+    document.getElementById('resp-view').style.display='none';
+  }
+}
+
+function saveRespuestas(){
+  var raw=v('broker-raw');
+  if(!raw){alert('Pegá las respuestas primero.');return;}
+  var o=getOff(CID)||{label:'',upd:Date.now()};
+  var nameM=raw.match(/Broker:\s*([^\n]+)/i);
+  if(nameM)o.broker_name=nameM[1].trim();
+  o.broker_raw=raw;
+  o.broker_date=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  o.upd=Date.now();
+  putOff(CID,o);
+  if(o.broker_name)document.getElementById('f-broker').textContent='Broker: '+o.broker_name;
+  showSavedOk();
+  loadRespPanel();
+  updateTabStatus();
+}
+
+function showPaste(){
+  var o=getOff(CID)||{};
+  document.getElementById('broker-raw').value=o.broker_raw||'';
+  document.getElementById('resp-paste-section').style.display='block';
+  document.getElementById('resp-loaded-banner').style.display='none';
+  document.getElementById('resp-view').style.display='none';
+}
+
+function clearRespuestas(){
+  if(!confirm('¿Borrar las respuestas del broker?'))return;
+  var o=getOff(CID)||{};o.broker_raw='';o.broker_name='';o.upd=Date.now();
+  putOff(CID,o);document.getElementById('broker-raw').value='';loadRespPanel();
+  document.getElementById('f-broker').textContent='Sin respuestas todavía';
+}
+
+function renderRespView(raw){
+  var p1=(raw.match(/P1[^0-9]*(\d+)\/10/i)||[])[1]||'—';
+  var p2=(raw.match(/P2[^0-9]*(\d+)\/10/i)||[])[1]||'—';
+  var p3=(raw.match(/P3[^0-9]*(\d+)\/10/i)||[])[1]||'—';
+  var p4=(raw.match(/P4[^0-9]*(\d+)\/10/i)||[])[1]||'—';
+  var html='<div class="score4">'
+    +'<div class="pscore sc-p1"><div class="pscore-n">'+p1+'</div><div class="pscore-l">P1</div></div>'
+    +'<div class="pscore sc-p2"><div class="pscore-n">'+p2+'</div><div class="pscore-l">P2</div></div>'
+    +'<div class="pscore sc-p3"><div class="pscore-n">'+p3+'</div><div class="pscore-l">P3</div></div>'
+    +'<div class="pscore sc-p4"><div class="pscore-n">'+p4+'</div><div class="pscore-l">P4</div></div>'
+    +'</div>'
+    +'<div style="white-space:pre-wrap;font-size:12px;line-height:1.7;background:var(--white);border:1px solid var(--border);border-radius:8px;padding:1rem">'+raw.replace(/</g,'&lt;')+'</div>';
+  document.getElementById('resp-parsed').innerHTML=html;
+}
+
+// ─── TAB 2: DIAGNÓSTICO ──────────────────────────────────
+function loadDiag2Panel(){
+  var o=getOff(CID)||{};
+  var hasDiag=!!o.diag2;
+  document.getElementById('diag2-done-banner').style.display=hasDiag?'flex':'none';
+  document.getElementById('diag2-gen-section').style.display=hasDiag?'none':'block';
+  document.getElementById('diag2-output-wrap').style.display='none';
+  document.getElementById('diag2-loading').style.display='none';
+  if(hasDiag){document.getElementById('diag2-date').textContent='Generado el '+o.diag2_date;}
+}
+
+async function genDiag2(){
+  var o=getOff(CID)||{};
+  if(!o.broker_raw){alert('Primero cargá las respuestas del broker en la pestaña "Respuestas".');return;}
+  document.getElementById('diag2-gen-section').style.display='none';
+  document.getElementById('diag2-loading').style.display='block';
+  var steps=['Analizando P1 — Liderazgo...','Evaluando P2 — Equipo...','Revisando P3 — Procesos...','Analizando P4 — Performance...','Identificando raíces del sistema...'];
+  var si=0;var ldi=setInterval(function(){var el=document.getElementById('diag2-step');if(el&&si<steps.length)el.textContent=steps[si++];},2000);
+  var SYS='Sos un coach estratégico, ejecutivo y ontológico especializado en oficinas inmobiliarias latinoamericanas. Modelo 4P: P1 Broker (liderazgo/identidad) · P2 Equipo (cultura, arquetipos: Bloqueados 60%, Vitaminas 20%, Turistas 20%) · P3 Procesos (CAC: captación+ajuste+cierre, agenda verde/amarilla/roja, CRM) · P4 Performance (leading/lagging indicators, reunión semanal). Si falla una P impacta en todas. Estadios: Existencia/Supervivencia/Éxito/Despegue/Madurez. En Éxito y Despegue los cambios son de IDENTIDAD no de técnica. Dimensiones: SISTÉMICO/LIDERAZGO/MINDSET/HÁBITOS/HABILIDADES/PROCESO/PERFORMANCE.';
+  var PROMPT='Generá el DIAGNÓSTICO INTERNO completo (solo el diagnóstico, NO el plan de acción) de esta oficina.\n\nRESPUESTAS DEL BROKER:\n'+o.broker_raw+'\n\nCONTEXTO ADICIONAL DEL COACH:\n'+(v('ctx-diag')||'ninguno')+'\n\nGenerá con estas secciones exactas:\n\n## FOTO DEL SISTEMA\n[3-5 líneas. La oficina como sistema. Qué funciona y qué no. Directo.]\n\n## DIAGNÓSTICO POR DIMENSIÓN\n[Una línea por hallazgo: DIMENSIÓN — descripción concreta — por qué importa. Mínimo 6.]\n\n## LAS 3 RAÍCES\n[Las 3 causas profundas reales. No síntomas.]\n\n## INDICADORES DE ÉXITO A 90 DÍAS\n[4-5 métricas concretas y medibles.]\n\n## FRASE DIAGNÓSTICA\n[Una sola frase que resume el estado del sistema.]';
+  try{
+    var txt=await callWorker(SYS,PROMPT);
+    clearInterval(ldi);
+    document.getElementById('diag2-loading').style.display='none';
+    document.getElementById('diag2-output-wrap').style.display='block';
+    renderDiag2(txt,o);
+    o._diag2_raw=txt;putOff(CID,o);
+  }catch(e){
+    clearInterval(ldi);
+    document.getElementById('diag2-loading').style.display='none';
+    document.getElementById('diag2-gen-section').style.display='block';
+    alert('Error al conectar con la IA. Verificá la conexión al Worker.');
+  }
+}
+
+function renderDiag2(txt,o){
+  var raw=o.broker_raw||'';
+  var p1=(raw.match(/P1[^0-9]*(\d+)\/10/i)||[])[1]||'—';
+  var p2=(raw.match(/P2[^0-9]*(\d+)\/10/i)||[])[1]||'—';
+  var p3=(raw.match(/P3[^0-9]*(\d+)\/10/i)||[])[1]||'—';
+  var p4=(raw.match(/P4[^0-9]*(\d+)\/10/i)||[])[1]||'—';
+  var foto=extractSection(txt,'FOTO DEL SISTEMA');
+  var dimTxt=extractSection(txt,'DIAGNÓSTICO POR DIMENSIÓN');
+  var raices=extractSection(txt,'LAS 3 RAÍCES');
+  var indic=extractSection(txt,'INDICADORES DE ÉXITO');
+  var frase=extractSection(txt,'FRASE DIAGNÓSTICA').replace(/["""]/g,'').replace(/\n/g,' ');
+  var dm={SISTÉMICO:'fc-s',LIDERAZGO:'fc-l',MINDSET:'fc-m',HÁBITOS:'fc-h',HABILIDADES:'fc-h',PROCESO:'fc-p',PERFORMANCE:'fc-r'};
+  function pDim(t){return t.split('\n').filter(function(l){return l.trim();}).map(function(l){var d=l.match(/^-?\s*(SISTÉMICO|LIDERAZGO|MINDSET|HÁBITOS|HABILIDADES|PROCESO|PERFORMANCE)/i);var key=d?d[1].toUpperCase():'';var cls=key?dm[key]||'fc-l':'';var c=l.replace(/^[-•*]\s*/,'').replace(new RegExp('^'+key+'\\s*[—–-]+\\s*','i'),'');return cls?'<div class="fc '+cls+'"><div class="fl2">'+key+'</div><div class="ft">'+c+'</div></div>':'<p style="font-size:12px;line-height:1.7;margin-bottom:.25rem">'+l.replace(/^[-•*]\s*/,'')+'</p>';}).join('');}
+  function pList(t){return t.split('\n').filter(function(l){return l.trim();}).map(function(l){return '<li style="font-size:12px;line-height:1.8;margin-bottom:.2rem">'+l.replace(/^[-•*\d.]+\s*/,'')+'</li>';}).join('');}
+  var html='<div style="border-bottom:1px solid var(--border);padding-bottom:.875rem;margin-bottom:.875rem">'
+    +'<h2 style="font-family:\'DM Serif Display\',serif;font-size:18px;font-weight:400;margin-bottom:2px">Diagnóstico interno · '+(o.label||'')+'</h2>'
+    +'<p style="font-size:10px;color:var(--muted)">'+(o.broker_name?'Broker: '+o.broker_name+' · ':'')+new Date().toLocaleDateString('es-AR')+' · Coach Ricardo Gabisson</p>'
+    +(frase?'<div style="background:#fffdf0;border:1px solid #e8d9b0;border-radius:6px;padding:.5rem .75rem;margin-top:.625rem"><span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#8a6a20">En una línea: </span><em style="font-size:12px;color:#5a4a2a">"'+frase+'"</em></div>':'')
+    +'</div>'
+    +'<div class="score4"><div class="pscore sc-p1"><div class="pscore-n">'+p1+'</div><div class="pscore-l">P1</div></div><div class="pscore sc-p2"><div class="pscore-n">'+p2+'</div><div class="pscore-l">P2</div></div><div class="pscore sc-p3"><div class="pscore-n">'+p3+'</div><div class="pscore-l">P3</div></div><div class="pscore sc-p4"><div class="pscore-n">'+p4+'</div><div class="pscore-l">P4</div></div></div>'
+    +'<div class="dsec"><h3>📸 Foto del sistema</h3><p style="font-size:13px;line-height:1.75">'+foto.replace(/\n/g,'<br>')+'</p></div>'
+    +'<div class="dsec"><h3>🔍 Diagnóstico por dimensión</h3>'+pDim(dimTxt)+'</div>'
+    +'<div class="dsec"><h3>🌱 Las 3 raíces</h3><ul style="list-style:none;display:flex;flex-direction:column;gap:.3rem">'+pList(raices)+'</ul></div>'
+    +'<div class="dsec"><h3>🎯 Indicadores a 90 días</h3><ul style="list-style:none;display:flex;flex-direction:column;gap:.3rem">'+pList(indic)+'</ul></div>'
+    +'<div style="background:#f5f0e8;border-radius:7px;padding:.625rem;text-align:center;font-size:10px;color:var(--muted)">Coach Ricardo Gabisson · Uso interno · '+new Date().toLocaleDateString('es-AR')+'</div>';
+  document.getElementById('diag2-output').innerHTML=html;
+}
+
+function saveDiag2(){
+  var o=getOff(CID)||{};
+  o.diag2=document.getElementById('diag2-output').innerHTML;
+  o.diag2_raw=o._diag2_raw||'';
+  o.diag2_date=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  o.upd=Date.now();putOff(CID,o);showSavedOk();
+  // FIX 2: se llamaba updateTabStatus() dos veces seguidas — quedaba una sola
+  loadDiag2Panel();updateTabStatus();alert('✓ Diagnóstico guardado.');
+}
+
+function saveDiag2Manual(){
+  var raw=v('diag2-manual');if(!raw){alert('Pegá el diagnóstico primero.');return;}
+  var o=getOff(CID)||{};o._diag2_raw=raw;
+  document.getElementById('diag2-loading').style.display='none';
+  document.getElementById('diag2-output-wrap').style.display='block';
+  document.getElementById('diag2-gen-section').style.display='none';
+  renderDiag2(raw,o);
+  o.diag2=document.getElementById('diag2-output').innerHTML;
+  o.diag2_raw=raw;
+  o.diag2_date=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  o.upd=Date.now();putOff(CID,o);showSavedOk();loadDiag2Panel();updateTabStatus();
+}
+
+function showDiag2(){var o=getOff(CID)||{};if(!o.diag2)return;document.getElementById('diag2-gen-section').style.display='none';document.getElementById('diag2-done-banner').style.display='none';document.getElementById('diag2-output').innerHTML=o.diag2;document.getElementById('diag2-output-wrap').style.display='block';}
+function clearDiag2(){if(!confirm('¿Borrar el diagnóstico guardado?'))return;var o=getOff(CID)||{};o.diag2=null;o.diag2_raw=null;o.upd=Date.now();putOff(CID,o);loadDiag2Panel();}
+function resetDiag2(){document.getElementById('diag2-output-wrap').style.display='none';document.getElementById('diag2-gen-section').style.display='block';}
+
+// ─── TAB 3: PLAN DE ACCIÓN ───────────────────────────────
+function loadPlan3Panel(){
+  var o=getOff(CID)||{};
+  var hasPlan=!!o.plan3;
+  document.getElementById('plan3-done-banner').style.display=hasPlan?'flex':'none';
+  document.getElementById('plan3-gen-section').style.display=hasPlan?'none':'block';
+  document.getElementById('plan3-output-wrap').style.display='none';
+  document.getElementById('plan3-loading').style.display='none';
+  if(hasPlan)document.getElementById('plan3-date').textContent='Generado el '+o.plan3_date;
+}
+
+async function genPlan3(){
+  var o=getOff(CID)||{};
+  var diagRaw=o.diag2_raw||o._diag2_raw||'';
+  if(!diagRaw){alert('Primero generá y guardá el diagnóstico en la pestaña anterior.');return;}
+  document.getElementById('plan3-gen-section').style.display='none';
+  document.getElementById('plan3-loading').style.display='block';
+  var SYS='Sos un coach estratégico especializado en oficinas inmobiliarias. Generás planes de acción de coaching basados en el modelo 4P (P1 Broker, P2 Equipo, P3 Procesos, P4 Performance). El programa siempre dura 3 meses con máximo 12 sesiones totales: 6-8 con el broker, el resto grupales o individuales. Estructura base: Mes1 (P1+P2: diagnóstico, identidad, equipo), Mes2 (P3+P4: procesos, agenda, métricas), Mes3 (consolidación, identidad, cultura, cierre).';
+  var PROMPT='Basándote en este diagnóstico, generá el PLAN DE ACCIÓN personalizado de 12 sesiones en 3 meses.\n\nDIAGNÓSTICO:\n'+diagRaw+'\n\nGenera con estas secciones:\n\n## PLAN DE ACCIÓN — [nombre de la oficina]\n\n### Mes 1 — [título temático]\n[4 sesiones con número, P correspondiente, título, foco, herramientas clave]\n\n### Mes 2 — [título temático]\n[4 sesiones con número, P correspondiente, título, foco, herramientas clave]\n\n### Mes 3 — [título temático]\n[4 sesiones con número, P correspondiente, título, foco, herramientas clave]\n\n## INDICADORES DE ÉXITO A 90 DÍAS\n[4-5 métricas concretas]';
+  try{
+    var txt=await callWorker(SYS,PROMPT);
+    document.getElementById('plan3-loading').style.display='none';
+    document.getElementById('plan3-output-wrap').style.display='block';
+    document.getElementById('plan3-editor').value=txt;
+    o._plan3_raw=txt;putOff(CID,o);
+  }catch(e){
+    document.getElementById('plan3-loading').style.display='none';
+    document.getElementById('plan3-gen-section').style.display='block';
+    alert('Error al conectar con la IA.');
+  }
+}
+
+function savePlan3Manual(){
+  var raw=v('plan3-manual');if(!raw){alert('Pegá el plan primero.');return;}
+  document.getElementById('plan3-gen-section').style.display='none';
+  document.getElementById('plan3-output-wrap').style.display='block';
+  document.getElementById('plan3-editor').value=raw;
+  var o=getOff(CID)||{};o._plan3_raw=raw;putOff(CID,o);
+}
+
+function savePlan3(){
+  var o=getOff(CID)||{};
+  o.plan3=document.getElementById('plan3-editor').value;
+  o.plan3_date=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  o.upd=Date.now();putOff(CID,o);showSavedOk();loadPlan3Panel();updateTabStatus();alert('✓ Plan guardado.');
+}
+
+function showPlan3(){var o=getOff(CID)||{};if(!o.plan3)return;document.getElementById('plan3-gen-section').style.display='none';document.getElementById('plan3-done-banner').style.display='none';document.getElementById('plan3-editor').value=o.plan3;document.getElementById('plan3-output-wrap').style.display='block';}
+function clearPlan3(){if(!confirm('¿Borrar el plan guardado?'))return;var o=getOff(CID)||{};o.plan3=null;o.upd=Date.now();putOff(CID,o);loadPlan3Panel();}
+function resetPlan3(){document.getElementById('plan3-output-wrap').style.display='none';document.getElementById('plan3-gen-section').style.display='block';}
+
+async function refinarPlan(){
+  var instruccion=v('refine-prompt');if(!instruccion){document.getElementById('refine-prompt').focus();return;}
+  var planActual=document.getElementById('plan3-editor').value.trim();if(!planActual){alert('No hay plan para refinar.');return;}
+  var btn=document.querySelector('[onclick="refinarPlan()"]');btn.textContent='...';btn.disabled=true;
+  try{
+    var txt=await callWorker('Sos un coach estratégico especializado en oficinas inmobiliarias. Refinás planes de acción según instrucciones específicas. Devolvé solo el plan ajustado en el mismo formato.',
+      'Plan actual:\n'+planActual+'\n\nInstrucción: '+instruccion+'\n\nDevolvé el plan completo ajustado.');
+    if(txt){document.getElementById('plan3-editor').value=txt;document.getElementById('refine-prompt').value='';}
+  }catch(e){alert('Error al conectar con la IA.');}
+  btn.textContent='↻ Refinar';btn.disabled=false;
+}
+
+// ─── TAB 4: PLAN VISUAL ──────────────────────────────────
+var pvSessions=[];var pvOpenCard=null;
+
+function loadPVPanel(){
+  var o=getOff(CID)||{};
+  var hasPlan=!!(o.plan3||o._plan3_raw);
+  var hasPV=!!(o.pv_sessions&&o.pv_sessions.length);
+  document.getElementById('pv-empty').style.display=hasPlan?'none':'block';
+  document.getElementById('pv-gen-section').style.display=(hasPlan&&!hasPV)?'block':'none';
+  document.getElementById('pv-loading').style.display='none';
+  document.getElementById('pv-content').style.display=hasPV?'block':'none';
+  if(hasPV){pvSessions=o.pv_sessions;renderPVCards('all');}
+}
+
+async function genPV(){
+  var o=getOff(CID)||{};
+  var planText=o.plan3||o._plan3_raw||'';
+  if(!planText){alert('No hay plan guardado.');return;}
+  document.getElementById('pv-gen-section').style.display='none';
+  document.getElementById('pv-loading').style.display='block';
+  try{
+    var txt=await callWorker('Convertís planes de coaching en JSON estructurado. Respondé SOLO con JSON válido, sin texto adicional, sin backticks.',
+      'Convertí este plan en JSON. Devolvé SOLO el array JSON:\n'+planText+'\n\nFormato exacto:\n[{"num":1,"mes":"Mes 1","p":"p1","titulo":"Título","subtitulo":"Subtítulo","objetivos":["obj1","obj2"],"herramientas":["herr1"],"tarea":"Tarea entre sesiones"}]\n\np debe ser p1/p2/p3/p4. p1=broker/liderazgo, p2=equipo/grupal, p3=procesos/sistema, p4=métricas/performance. Máximo 12 sesiones. Distribuí en Mes 1/2/3.');
+    var clean=txt.replace(/```json/g,'').replace(/```/g,'').trim();
+    pvSessions=JSON.parse(clean);
+    o.pv_sessions=pvSessions;o.upd=Date.now();putOff(CID,o);
+    document.getElementById('pv-loading').style.display='none';
+    document.getElementById('pv-content').style.display='block';
+    renderPVCards('all');showSavedOk();updateTabStatus();
+  }catch(e){
+    document.getElementById('pv-loading').style.display='none';
+    document.getElementById('pv-gen-section').style.display='block';
+    alert('Error al generar el plan visual.');
+  }
+}
+
+function renderPVCards(filter){
+  var sessions=filter==='all'?pvSessions:pvSessions.filter(function(s){return s.p===filter;});
+  var months=[];sessions.forEach(function(s){if(months.indexOf(s.mes)===-1)months.push(s.mes);});
+  var pLabels={p1:'P1 · Broker',p2:'P2 · Equipo',p3:'P3 · Procesos',p4:'P4 · Performance'};
+  var html='';
+  months.forEach(function(mes){
+    var ms=sessions.filter(function(s){return s.mes===mes;});
+    html+='<div class="pv-month">'+mes+'</div><div class="pv-grid">';
+    ms.forEach(function(s){
+      var open=pvOpenCard===s.num;
+      html+='<div class="pv-card '+s.p+(open?' open':'')+'" onclick="pvToggle('+s.num+')">'
+        +'<div class="pv-hdr"><div class="pv-num">'+s.num+'</div><div>'
+        +'<div class="pv-plbl">'+(pLabels[s.p]||s.p)+'</div>'
+        +'<div class="pv-title">'+(s.titulo||'')+'</div>'
+        +'<div class="pv-sub">'+(s.subtitulo||'')+'</div>'
+        +'</div></div>'
+        +'<div class="pv-detail">'
+        +(s.objetivos&&s.objetivos.length?'<div class="pv-dlabel">Objetivos</div><ul class="pv-dlist">'+s.objetivos.map(function(o){return'<li>'+o+'</li>';}).join('')+'</ul>':'')
+        +(s.herramientas&&s.herramientas.length?'<div class="pv-dlabel">Herramientas</div><ul class="pv-dlist">'+s.herramientas.map(function(h){return'<li>'+h+'</li>';}).join('')+'</ul>':'')
+        +(s.tarea?'<div class="pv-dlabel">Tarea / compromiso</div><p style="font-size:11px;color:var(--muted);line-height:1.4;margin-top:2px">'+s.tarea+'</p>':'')
+        +'</div></div>';
+    });
+    html+='</div>';
+  });
+  if(!html)html='<div style="text-align:center;padding:2rem;color:var(--muted);font-size:13px">Sin sesiones para este filtro.</div>';
+  document.getElementById('pv-cards').innerHTML=html;
+}
+
+function pvToggle(num){pvOpenCard=pvOpenCard===num?null:num;var f=document.querySelector('.pvf-btn.on');var filter=f?(f.classList.contains('all')?'all':['p1','p2','p3','p4'].find(function(c){return f.classList.contains(c+'f');})||'all'):'all';renderPVCards(filter);}
+function pvFilter(filter,btn){document.querySelectorAll('.pvf-btn').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');pvOpenCard=null;renderPVCards(filter);}
+function pvRegen(){if(!confirm('¿Regenerar el plan visual?'))return;var o=getOff(CID)||{};o.pv_sessions=null;putOff(CID,o);pvSessions=[];document.getElementById('pv-content').style.display='none';document.getElementById('pv-gen-section').style.display='block';}
+
+// ─── TAB 5: DIAGNÓSTICO PARA EL BROKER ──────────────────
+function loadDoc5Panel(){
+  var o=getOff(CID)||{};
+  if(o.doc5){
+    document.getElementById('doc5-gen-section').style.display='none';
+    document.getElementById('doc5-output').innerHTML=o.doc5;
+    document.getElementById('doc5-output-wrap').style.display='block';
+  } else {
+    document.getElementById('doc5-gen-section').style.display='block';
+    document.getElementById('doc5-output-wrap').style.display='none';
+  }
+}
+
+async function genDoc5(){
+  var o=getOff(CID)||{};
+  var diagRaw=o.diag2_raw||o._diag2_raw||'';
+  if(!diagRaw){alert('Primero generá el diagnóstico interno en la pestaña "Diagnóstico".');return;}
+  document.getElementById('doc5-gen-section').style.display='none';
+  document.getElementById('doc5-loading').style.display='block';
+  var raw=o.broker_raw||'';
+  var p1=(raw.match(/P1[^0-9]*(\d+)\/10/i)||[])[1]||'5';
+  var p2=(raw.match(/P2[^0-9]*(\d+)\/10/i)||[])[1]||'5';
+  var p3=(raw.match(/P3[^0-9]*(\d+)\/10/i)||[])[1]||'5';
+  var p4=(raw.match(/P4[^0-9]*(\d+)\/10/i)||[])[1]||'5';
+  try{
+    var txt=await callWorker('Sos un coach estratégico. Reescribís diagnósticos técnicos en lenguaje accesible y empático para brokers inmobiliarios. Sin jerga de coaching. Foco en lo que el broker siente y puede mejorar. Tono profesional pero cercano.',
+      'Reescribí este diagnóstico interno en un documento para presentarle AL BROKER (no para el coach).\n\nDIAGNÓSTICO INTERNO:\n'+diagRaw+'\n\nGenera con estas secciones (en lenguaje accesible, sin jerga técnica):\n\n## CÓMO ESTÁ TU OFICINA HOY\n[3-4 párrafos descriptivos, empáticos, que el broker se reconozca]\n\n## LO QUE ESTÁ FUNCIONANDO\n[2-3 puntos positivos reales]\n\n## LOS PRINCIPALES DESAFÍOS\n[3-4 desafíos concretos en lenguaje del broker, no del coach]\n\n## LA OPORTUNIDAD\n[1-2 párrafos sobre el potencial de crecimiento si se trabajan estos puntos]\n\n## PRÓXIMOS PASOS\n[Qué implicaría un proceso de acompañamiento para resolver esto]');
+    document.getElementById('doc5-loading').style.display='none';
+    var docHTML=buildDoc5HTML(txt,o,p1,p2,p3,p4);
+    document.getElementById('doc5-output').innerHTML=docHTML;
+    document.getElementById('doc5-output-wrap').style.display='block';
+    o._doc5_raw=txt;putOff(CID,o);
+  }catch(e){
+    document.getElementById('doc5-loading').style.display='none';
+    document.getElementById('doc5-gen-section').style.display='block';
+    alert('Error al generar el documento.');
+  }
+}
+
+function buildDoc5HTML(txt,o,p1,p2,p3,p4){
+  function pct(n){return Math.round(parseInt(n)/10*100)+'%';}
+  function donut(val,color,label){
+    var n=parseInt(val)||0;
+    var r=28;var circ=2*3.14159*r;
+    var dash=(n/10)*circ;var gap=circ-dash;
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px">'
+      +'<svg width="72" height="72" viewBox="0 0 72 72">'
+      +'<circle cx="36" cy="36" r="'+r+'" fill="none" stroke="#e8e4de" stroke-width="8"/>'
+      +'<circle cx="36" cy="36" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="8"'
+      +' stroke-dasharray="'+dash+' '+gap+'" stroke-dashoffset="'+(circ/4)+'" stroke-linecap="round"/>'
+      +'<text x="36" y="40" text-anchor="middle" font-family="DM Serif Display,serif" font-size="16" fill="'+color+'">'+n+'</text>'
+      +'</svg>'
+      +'<div style="font-size:10px;font-weight:700;color:'+color+';text-align:center;text-transform:uppercase;letter-spacing:.04em">'+label+'</div>'
+      +'</div>';
+  }
+  function getSec(t,title){
+    var upper=t.toUpperCase();
+    var tUpper=title.toUpperCase();
+    var idx=upper.indexOf(tUpper);
+    if(idx===-1)return '';
+    var after=t.slice(idx+title.length).replace(/^[\s:#*\n]+/,'');
+    var otherTitles=['CÓMO','LO QUE','LOS PRIN','LA OPO','PRÓXIMOS'];
+    var nextIdx=-1;
+    otherTitles.forEach(function(s){
+      if(s===tUpper.slice(0,s.length))return;
+      var i=after.toUpperCase().indexOf(s);
+      if(i>10&&(nextIdx===-1||i<nextIdx))nextIdx=i;
+    });
+    return nextIdx>0?after.slice(0,nextIdx).trim():after.trim();
+  }
+  function fmtSec(t){
+    return t
+      .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+      .replace(/^[-•]\s+(.+)$/gm,'<p style="font-size:13px;line-height:1.7;margin-bottom:.375rem;padding-left:.75rem;border-left:2px solid #e2ddd7">$1</p>')
+      .split('\n\n').join('</p><p style="font-size:13px;line-height:1.8;color:#333;margin-bottom:.5rem">')
+      .split('\n').join('<br>');
+  }
+  var fechaDoc=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
+  var como=getSec(txt,'CÓMO ESTÁ TU OFICINA HOY');
+  var bueno=getSec(txt,'LO QUE ESTÁ FUNCIONANDO');
+  var desafios=getSec(txt,'LOS PRINCIPALES DESAFÍOS');
+  var oportunidad=getSec(txt,'LA OPORTUNIDAD');
+  var pasos=getSec(txt,'PRÓXIMOS PASOS');
+  var anyContent=como||bueno||desafios||oportunidad||pasos;
+  var html='<div class="doc-preview">'
+    +'<div class="doc-header">'
+    +'<h1>Diagnóstico de tu Oficina</h1>'
+    +'<p>Preparado por Coach Ricardo Gabisson &nbsp;·&nbsp; '+(o.broker_name||'')+' &nbsp;·&nbsp; '+fechaDoc+'</p>'
+    +'</div>'
+    +'<div class="doc-body">'
+    +'<div class="doc-section">'
+    +'<h2>Tu autoevaluación 4P</h2>'
+    +'<div style="display:flex;justify-content:space-around;flex-wrap:wrap;gap:1rem;margin:.75rem 0">'
+    +donut(p1,'#2563eb','Liderazgo')
+    +donut(p2,'#16a34a','Equipo')
+    +donut(p3,'#d97706','Procesos')
+    +donut(p4,'#dc2626','Resultados')
+    +'</div>'
+    +'<div style="margin-top:.875rem">'
+    +'<div class="bar-row"><div class="bar-label" style="color:#2563eb">Liderazgo</div><div class="bar-track"><div class="bar-fill" style="width:'+pct(p1)+';background:#2563eb"></div></div><div class="bar-val" style="color:#2563eb">'+p1+'/10</div></div>'
+    +'<div class="bar-row"><div class="bar-label" style="color:#16a34a">Equipo</div><div class="bar-track"><div class="bar-fill" style="width:'+pct(p2)+';background:#16a34a"></div></div><div class="bar-val" style="color:#16a34a">'+p2+'/10</div></div>'
+    +'<div class="bar-row"><div class="bar-label" style="color:#d97706">Procesos</div><div class="bar-track"><div class="bar-fill" style="width:'+pct(p3)+';background:#d97706"></div></div><div class="bar-val" style="color:#d97706">'+p3+'/10</div></div>'
+    +'<div class="bar-row"><div class="bar-label" style="color:#dc2626">Resultados</div><div class="bar-track"><div class="bar-fill" style="width:'+pct(p4)+';background:#dc2626"></div></div><div class="bar-val" style="color:#dc2626">'+p4+'/10</div></div>'
+    +'</div>'
+    +'</div>';
+  if(!anyContent){
+    html+='<div class="doc-section"><div style="font-size:13px;line-height:1.8;white-space:pre-wrap;color:#333">'+txt.replace(/</g,'&lt;')+'</div></div>';
+  } else {
+    if(como)html+='<div class="doc-section"><h2>Cómo está tu oficina hoy</h2><div><p style="font-size:13px;line-height:1.8;color:#333;margin-bottom:.5rem">'+fmtSec(como)+'</p></div></div>';
+    if(bueno)html+='<div class="doc-section"><h2>Lo que está funcionando</h2><div><p style="font-size:13px;line-height:1.8;color:#333;margin-bottom:.5rem">'+fmtSec(bueno)+'</p></div></div>';
+    if(desafios)html+='<div class="doc-section"><h2>Los principales desafíos</h2><div><p style="font-size:13px;line-height:1.8;color:#333;margin-bottom:.5rem">'+fmtSec(desafios)+'</p></div></div>';
+    if(oportunidad)html+='<div class="doc-section"><h2>La oportunidad</h2><div><p style="font-size:13px;line-height:1.8;color:#333;margin-bottom:.5rem">'+fmtSec(oportunidad)+'</p></div></div>';
+    if(pasos)html+='<div class="doc-section"><h2>Próximos pasos</h2><div><p style="font-size:13px;line-height:1.8;color:#333;margin-bottom:.5rem">'+fmtSec(pasos)+'</p></div></div>';
+  }
+  html+='<div style="background:var(--ink);color:white;border-radius:9px;padding:1.25rem 1.5rem;text-align:center;margin-top:.5rem">'
+    +'<p style="font-size:11px;opacity:.6;margin-bottom:3px">Preparado por</p>'
+    +'<p style="font-family:DM Serif Display,serif;font-size:18px;font-weight:400">Coach Ricardo Gabisson</p>'
+    +'<p style="font-size:11px;opacity:.5;margin-top:3px">Coach Ejecutivo e Inmobiliario</p>'
+    +'</div>'
+    +'</div></div>';
+  return html;
+}
+
+function saveDoc5(){var o=getOff(CID)||{};o.doc5=document.getElementById('doc5-output').innerHTML;o.upd=Date.now();putOff(CID,o);showSavedOk();updateTabStatus();alert('✓ Documento guardado.');}
+function resetDoc5(){document.getElementById('doc5-output-wrap').style.display='none';document.getElementById('doc5-gen-section').style.display='block';}
+
+// ─── TAB 6: PROPUESTA COMERCIAL ──────────────────────────
+function loadPropPanel(){
+  var o=getOff(CID)||{};
+  if(o.prop){
+    document.getElementById('prop-gen-section').style.display='none';
+    document.getElementById('prop-output').innerHTML=o.prop;
+    document.getElementById('prop-output-wrap').style.display='block';
+  } else {
+    document.getElementById('prop-gen-section').style.display='block';
+    document.getElementById('prop-output-wrap').style.display='none';
+  }
+}
+
+async function genProp(){
+  var o=getOff(CID)||{};
+  var diagRaw=o.diag2_raw||o._diag2_raw||'';
+  var planRaw=o.plan3||o._plan3_raw||'';
+  if(!diagRaw){alert('Primero generá el diagnóstico.');return;}
+  var precio=v('precio-input');var modalidad=v('modalidad-input');
+  if(!precio){alert('Ingresá el precio antes de generar.');document.getElementById('precio-input').focus();return;}
+  document.getElementById('prop-gen-section').style.display='none';
+  document.getElementById('prop-loading').style.display='block';
+  try{
+    var txt=await callWorker('Sos un coach estratégico que genera propuestas comerciales profesionales para brokers inmobiliarios. Lenguaje claro, persuasivo pero honesto. No revelás el detalle metodológico completo — solo lo suficiente para que el broker confíe y decida contratar.',
+      'Generá una PROPUESTA COMERCIAL para este broker.\n\nDIAGNÓSTICO:\n'+diagRaw+'\n\nPLAN BASE:\n'+(planRaw||'12 sesiones en 3 meses, eje modelo 4P')+'\n\nINVERSIÓN: '+precio+'\nMODALIDAD: '+(modalidad||'12 sesiones en 3 meses')+'\n\nGenerá con estas secciones:\n\n## RESUMEN DEL DIAGNÓSTICO\n[3-4 líneas que resumen lo esencial sin revelar el análisis completo — que el broker se reconozca]\n\n## EL PROGRAMA\n[Descripción del programa por mes: qué se trabaja en cada etapa, sin el detalle de herramientas]\n\n## QUÉ INCLUYE\n[Lista de 5-7 puntos concretos: número de sesiones, modalidad, materiales, seguimiento, etc.]\n\n## PRÓXIMOS PASOS\n[3 pasos simples para arrancar]');
+    document.getElementById('prop-loading').style.display='none';
+    var propHTML=buildPropHTML(txt,o,precio,modalidad);
+    document.getElementById('prop-output').innerHTML=propHTML;
+    document.getElementById('prop-output-wrap').style.display='block';
+    o._prop_raw=txt;o._prop_precio=precio;o._prop_modalidad=modalidad;putOff(CID,o);
+  }catch(e){
+    document.getElementById('prop-loading').style.display='none';
+    document.getElementById('prop-gen-section').style.display='block';
+    alert('Error al generar la propuesta.');
+  }
+}
+
+function buildPropHTML(txt,o,precio,modalidad){
+  function getSection(t,title){var re=new RegExp('##\\s*'+title+'[\\s\\S]*?(?=##|$)','i');var m=t.match(re);return m?m[0].replace(new RegExp('##\\s*'+title,'i'),'').trim():'';}
+  var fechaDoc=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
+  var resumen=getSection(txt,'RESUMEN DEL DIAGNÓSTICO');
+  var programa=getSection(txt,'EL PROGRAMA');
+  var incluye=getSection(txt,'QUÉ INCLUYE');
+  var pasos=getSection(txt,'PRÓXIMOS PASOS');
+  function fmtParagraphs(t){
+    var lines=t.split('\n').filter(function(l){return l.trim();});
+    return lines.map(function(l){
+      return '<p style="font-size:13px;line-height:1.8;color:#333;margin-bottom:.625rem">'+l.replace(/^[-•*\d.]+\s*/,'').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')+'</p>';
+    }).join('');
+  }
+  function fmtList(t){return t.split('\n').filter(function(l){return l.trim();}).map(function(l){return'<div class="incluye-item">'+l.replace(/^[-•*\d.]+\s*/,'').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')+'</div>';}).join('');}
+  function fmtMeses(t){
+    return t.split('\n').filter(function(l){return l.trim();}).map(function(l){
+      var mesM=l.match(/^[*-]?\s*(mes\s*\d|mes\s+[a-záéíóú]+)/i);
+      if(mesM)return'<div class="mes-row"><div class="mes-badge">'+mesM[1]+'</div><div class="mes-content">'+l.replace(/^[*-]?\s*(mes\s*\d|mes\s+[a-záéíóú]+)[:\s]*/i,'')+'</div></div>';
+      return'<p style="font-size:13px;line-height:1.7;color:#333;margin-bottom:.375rem">'+l.replace(/^[-•*]\s*/,'')+'</p>';
+    }).join('');
+  }
+  var num=0;function secNum(){num++;return'<span style="display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--ink);color:white;font-size:11px;font-weight:700;text-align:center;line-height:22px;margin-right:8px;flex-shrink:0">'+num+'</span>';}
+  return '<div class="prop-doc">'
+    +'<div class="prop-hdr"><h1>Propuesta de Coaching</h1><p>'+fechaDoc+' · Para: '+(o.broker_name||o.label||'')+'</p></div>'
+    +'<div class="prop-body">'
+    +(resumen?'<div class="prop-section"><h2 style="display:flex;align-items:center">'+secNum()+'Diagnóstico de tu oficina</h2><div>'+fmtParagraphs(resumen)+'</div></div>':'')
+    +(programa?'<div class="prop-section"><h2 style="display:flex;align-items:center">'+secNum()+'El programa de trabajo</h2>'+fmtMeses(programa)+'</div>':'')
+    +(incluye?'<div class="prop-section"><h2 style="display:flex;align-items:center">'+secNum()+'Qué incluye · Inversión</h2>'+fmtList(incluye)
+    +'<div style="background:#f8f6f2;border:1px solid #e2ddd7;border-radius:9px;padding:1rem 1.25rem;margin-top:.875rem">'
+    +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.375rem">Inversión total</div>'
+    +'<div style="font-family:DM Serif Display,serif;font-size:24px;color:var(--ink);margin-bottom:3px">'+precio+'</div>'
+    +'<div style="font-size:12px;color:var(--muted)">'+(modalidad||'12 sesiones · 3 meses')+'</div>'
+    +'</div></div>':'')
+    +(pasos?'<div class="prop-section"><h2 style="display:flex;align-items:center">'+secNum()+'Próximos pasos</h2>'+fmtParagraphs(pasos)+'</div>':'')
+    +'</div>'
+    +'<div class="prop-footer">Coach Ricardo Gabisson · Coach Ejecutivo e Inmobiliario · '+(o.label||'')+'</div>'
+    +'</div>';
+}
+
+function saveProp(){var o=getOff(CID)||{};o.prop=document.getElementById('prop-output').innerHTML;o.upd=Date.now();putOff(CID,o);showSavedOk();updateTabStatus();alert('✓ Propuesta guardada.');}
+function resetProp(){document.getElementById('prop-output-wrap').style.display='none';document.getElementById('prop-gen-section').style.display='block';}
+
+// ─── EXPORT / IMPORT ────────────────────────────────────
+function exportAll(){var raw=localStorage.getItem(SK)||'{}';var blob=new Blob([raw],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='panel_coach_'+new Date().toISOString().slice(0,10)+'.json';a.click();}
+function exportOffice(){if(!CID)return;var o=getOff(CID);var key=CID;var offs={};offs[key]=o;var blob=new Blob([JSON.stringify({offs:offs},null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ficha_'+(o.label||CID).replace(/\s+/g,'_')+'.json';a.click();}
+function openImportAll(){openModal('Importar datos','Pegá el contenido del archivo JSON exportado. Tip: abrí el .json con el Bloc de notas, Ctrl+A, copiá y pegá acá.',function(){try{var d=JSON.parse(document.getElementById('m-input').value.trim());if(!d.offs)throw new Error('invalid');var existing=getDB();Object.assign(existing.offs,d.offs);putDB(existing);alert('✓ Importado correctamente.');renderLobby();}catch(e){alert('Contenido inválido.');}});}
+
+// ─── MODAL ───────────────────────────────────────────────
+var _mcb=null;
+function openModal(t,s,cb){_mcb=cb;document.getElementById('m-title').textContent=t;document.getElementById('m-sub').textContent=s;document.getElementById('m-input').value='';document.getElementById('modal').classList.add('open');}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function modalOk(){if(_mcb)_mcb();closeModal();}
+
+// ─── DOC5 EDIT ───────────────────────────────────────────
+function toggleEditDoc5(){
+  var wrap=document.getElementById('doc5-editor-wrap');
+  var btn=document.getElementById('edit-doc5-btn');
+  var isOpen=wrap.style.display!=='none';
+  if(isOpen){wrap.style.display='none';btn.textContent='✏️ Editar texto';}
+  else{
+    var rendered=document.getElementById('doc5-output');
+    var cleanText=rendered?rendered.innerText||rendered.textContent||'':'';
+    if(!cleanText){
+      var o=getOff(CID)||{};
+      var raw=o._doc5_raw||o.diag2_raw||'';
+      cleanText=raw.replace(/^##\s*/gm,'').replace(/^#\s*/gm,'').replace(/\*\*([^*]+)\*\*/g,'$1');
+    }
+    document.getElementById('doc5-raw-editor').value=cleanText;
+    wrap.style.display='block';btn.textContent='✕ Cerrar editor';
+  }
+}
+function applyDoc5Edit(){
+  var editedText=document.getElementById('doc5-raw-editor').value.trim();
+  if(!editedText)return;
+  var o=getOff(CID)||{};
+  var raw=o.broker_raw||'';
+  var p1=(raw.match(/P1[^0-9]*([0-9]+)\/10/i)||[])[1]||'5';
+  var p2=(raw.match(/P2[^0-9]*([0-9]+)\/10/i)||[])[1]||'5';
+  var p3=(raw.match(/P3[^0-9]*([0-9]+)\/10/i)||[])[1]||'5';
+  var p4=(raw.match(/P4[^0-9]*([0-9]+)\/10/i)||[])[1]||'5';
+  function pct(n){return Math.round(parseInt(n)/10*100)+'%';}
+  function donut(val,color,label){var n=parseInt(val)||0;var r=28;var circ=2*3.14159*r;var dash=(n/10)*circ;var gap=circ-dash;return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><svg width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="'+r+'" fill="none" stroke="#e8e4de" stroke-width="8"/><circle cx="36" cy="36" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="8" stroke-dasharray="'+dash+' '+gap+'" stroke-dashoffset="'+(circ/4)+'" stroke-linecap="round"/><text x="36" y="40" text-anchor="middle" font-family="DM Serif Display,serif" font-size="16" fill="'+color+'">'+n+'</text></svg><div style="font-size:10px;font-weight:700;color:'+color+';text-align:center;text-transform:uppercase;letter-spacing:.04em">'+label+'</div></div>';}
+  var fechaDoc=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
+  var paras=editedText.split(/\n\n+/);
+  var bodyHTML='';
+  paras.forEach(function(para){
+    bodyHTML+='<p style="font-size:13px;line-height:1.8;color:#333;margin-bottom:.625rem">'+para.replace(/\n/g,'<br>')+'</p>';
+  });
+  var docHTML='<div class="doc-preview">'
+    +'<div class="doc-header"><h1>Diagnóstico de tu Oficina</h1><p>Preparado por Coach Ricardo Gabisson · '+(o.broker_name||'')+' · '+fechaDoc+'</p></div>'
+    +'<div class="doc-body"><div class="doc-section"><h2>Tu autoevaluación 4P</h2>'
+    +'<div style="display:flex;justify-content:space-around;flex-wrap:wrap;gap:1rem;margin:.75rem 0">'+donut(p1,'#2563eb','Liderazgo')+donut(p2,'#16a34a','Equipo')+donut(p3,'#d97706','Procesos')+donut(p4,'#dc2626','Resultados')+'</div>'
+    +'<div style="margin-top:.875rem">'
+    +'<div class="bar-row"><div class="bar-label" style="color:#2563eb">Liderazgo</div><div class="bar-track"><div class="bar-fill" style="width:'+pct(p1)+';background:#2563eb"></div></div><div class="bar-val" style="color:#2563eb">'+p1+'/10</div></div>'
+    +'<div class="bar-row"><div class="bar-label" style="color:#16a34a">Equipo</div><div class="bar-track"><div class="bar-fill" style="width:'+pct(p2)+';background:#16a34a"></div></div><div class="bar-val" style="color:#16a34a">'+p2+'/10</div></div>'
+    +'<div class="bar-row"><div class="bar-label" style="color:#d97706">Procesos</div><div class="bar-track"><div class="bar-fill" style="width:'+pct(p3)+';background:#d97706"></div></div><div class="bar-val" style="color:#d97706">'+p3+'/10</div></div>'
+    +'<div class="bar-row"><div class="bar-label" style="color:#dc2626">Resultados</div><div class="bar-track"><div class="bar-fill" style="width:'+pct(p4)+';background:#dc2626"></div></div><div class="bar-val" style="color:#dc2626">'+p4+'/10</div></div>'
+    +'</div></div>'
+    +bodyHTML
+    +'<div style="background:var(--ink);color:white;border-radius:9px;padding:1.25rem 1.5rem;text-align:center;margin-top:.5rem"><p style="font-size:11px;opacity:.6;margin-bottom:3px">Preparado por</p><p style="font-family:DM Serif Display,serif;font-size:18px;font-weight:400">Coach Ricardo Gabisson</p><p style="font-size:11px;opacity:.5;margin-top:3px">Coach Ejecutivo e Inmobiliario</p></div>'
+    +'</div></div>';
+  document.getElementById('doc5-output').innerHTML=docHTML;
+  o.doc5=docHTML;o.upd=Date.now();putOff(CID,o);
+  toggleEditDoc5();showSavedOk();
+}
+
+// ─── PROP EDIT ────────────────────────────────────────────
+function toggleEditProp(){
+  var wrap=document.getElementById('prop-editor-wrap');
+  var btn=document.getElementById('edit-prop-btn');
+  var isOpen=wrap.style.display!=='none';
+  if(isOpen){wrap.style.display='none';btn.textContent='✏️ Editar texto';}
+  else{
+    var o=getOff(CID)||{};
+    var rendered=document.getElementById('prop-output');
+    var cleanText=rendered?rendered.innerText||rendered.textContent||'':'';
+    if(!cleanText&&o._prop_raw){
+      cleanText=o._prop_raw
+        .replace(/^##\s*/gm,'').replace(/^#\s*/gm,'')
+        .replace(/\*\*([^*]+)\*\*/g,'$1')
+        .replace(/^[-•]\s*/gm,'• ');
+    }
+    document.getElementById('prop-raw-editor').value=cleanText;
+    wrap.style.display='block';btn.textContent='✕ Cerrar editor';
+  }
+}
+function applyPropEdit(){
+  var editedText=document.getElementById('prop-raw-editor').value.trim();
+  if(!editedText)return;
+  var o=getOff(CID)||{};
+  var precio=o._prop_precio||'';
+  var modalidad=o._prop_modalidad||'';
+  var fechaDoc=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
+  var paras=editedText.split(/\n\n+/);
+  var bodyHTML='';
+  for(var i=0;i<paras.length;i++){
+    bodyHTML+='<p style="font-size:13px;line-height:1.8;color:#333;margin-bottom:.75rem">'+paras[i].replace(/\n/g,'<br>')+'</p>';
+  }
+  var invBox='';
+  if(precio){invBox='<div style="background:#f8f6f2;border:1px solid #e2ddd7;border-radius:9px;padding:1rem 1.25rem;margin-top:.875rem"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.375rem">Inversión total</div><div style="font-family:DM Serif Display,serif;font-size:24px;color:var(--ink);margin-bottom:3px">'+precio+'</div><div style="font-size:12px;color:var(--muted)">'+(modalidad||'12 sesiones · 3 meses')+'</div></div>';}
+  var propHTML='<div class="prop-doc"><div class="prop-hdr"><h1>Propuesta de Coaching</h1><p>'+fechaDoc+' · Para: '+(o.broker_name||o.label||'')+'</p></div><div class="prop-body">'+bodyHTML+invBox+'</div><div class="prop-footer">Coach Ricardo Gabisson · Coach Ejecutivo e Inmobiliario · '+(o.label||'')+'</div></div>';
+  document.getElementById('prop-output').innerHTML=propHTML;
+  o.prop=propHTML;o.upd=Date.now();putOff(CID,o);
+  toggleEditProp();showSavedOk();
+}
+
+// ─── INIT — runs after all functions are defined ─────────
+document.addEventListener('DOMContentLoaded', function(){
+  var lockBtn=document.querySelector('.lock-btn');
+  if(lockBtn)lockBtn.addEventListener('click',chkPwd);
+  var pwdInput=document.getElementById('pwd');
+  if(pwdInput)pwdInput.addEventListener('keydown',function(e){if(e.key==='Enter')chkPwd();});
+  try{
+    if(sessionStorage.getItem('rg_ok')==='1')unlockApp();
+  }catch(e){}
+});
+</script>
+</body>
+</html>
